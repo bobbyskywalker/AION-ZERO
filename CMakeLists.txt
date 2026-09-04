@@ -85,10 +85,17 @@ target_include_directories(waveshare_fonts PUBLIC
 # Your application
 # ─────────────────────────────────────────────
 
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+        src/*.cpp
+        src/*.hpp
+)
+
 add_executable(aion-zero-fmw
-        src/main.cpp
-        src/display/display.hpp
-        src/display/display.cpp
+        ${SOURCES}
+        src/application/application.hpp
+        src/application/application.cpp
+        src/application/main_menu/main_menu.hpp
+        src/application/main_menu/main_menu.cpp
 )
 
 target_link_libraries(aion-zero-fmw
