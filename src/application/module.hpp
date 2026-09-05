@@ -3,7 +3,12 @@
 
 #include "../display/display.hpp"
 
-// all the module implementations ought to be registered in the application class
+// all the module implementations ought to be registered here
+enum class ModuleSwitchRequest {
+    None,
+    MainMenu
+};
+
 class Module {
 protected:
     display::LcdDisplay& display_;
@@ -11,7 +16,7 @@ public:
     explicit Module(display::LcdDisplay& display) : display_(display) {}
     virtual ~Module() = default;
 
-    virtual void loop() = 0;
+    virtual ModuleSwitchRequest loop() = 0;
     virtual void onEnter() = 0;
 };
 

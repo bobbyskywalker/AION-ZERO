@@ -1,10 +1,12 @@
 #include "display/display.hpp"
 #include "application/application.hpp"
 
-int main() {
+[[noreturn]] int main() {
     static auto lcd = display::LcdDisplay(VERTICAL);
     static auto app = Application(lcd);
 
-    app.getCurrentModule().loop();
-    return 1;
+    while (true) {
+        app.getCurrentModule().loop();
+        sleep_ms(16);
+    }
 }

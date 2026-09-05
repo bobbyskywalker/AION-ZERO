@@ -3,27 +3,29 @@ extern "C" {
 #include <string.h>
 }
 
-[[noreturn]] void MainMenu::loop() {
-    const auto text = "AION-ZERO";
+[[nodiscard]] ModuleSwitchRequest MainMenu::loop() {
+    const uint16_t initialY = Font16.Height + 5;
+    const uint16_t initialOptionsY = initialY * 3;
 
-    const uint16_t text_width = strlen(text) * Font12.Width;
-    const uint16_t x = (display::WIDTH - text_width) / 2;
+    this->display_.clear(BLACK);
 
-    const uint16_t y_offset = Font12.Height + 5;
-    const uint16_t y = 0 + y_offset;
+    const uint16_t titleWidth = strlen(TITLE) * Font16.Width;
+    uint16_t x = (display::WIDTH - titleWidth) / 2;
+    display_.drawString(x, initialY, TITLE, Font16, BLACK, WHITE);
 
-    bool titleInv = true;
+    for (std::size_t i = 0; i < options.size(); ++i) {
+        constexpr uint8_t optionOffset = 20;
 
-    while (true) {
-        this->display_.clear(BLACK);
-        if (titleInv) {
-            this->display_.drawString(x, y, text, Font12, BLACK, WHITE);
-            titleInv = false;
-        } else {
-            this->display_.drawString(x, y, text, Font12, WHITE, BLACK);
-            titleInv = true;
-        }
-        this->display_.update();
-        sleep_ms(1000);
+        const uint16_t text_width = static_cast<uint16_t>(strlen(options[i])) * Font12.Width;
+        x = (display::WIDTH - text_width) / 2;
+        const uint16_t y = initialOptionsY + static_cast<uint16_t>(i) * optionOffset;
+
+        display_.drawString(x, y, options[i], Font12, BLACK, WHITE);
     }
+
+    display_.update();
+
+    return ModuleSwitchRequest::None;
 }
+
+void MainMenu::onEnter() {/**/}

@@ -2,13 +2,17 @@
 #define AION_ZERO_FMW_MAIN_MENU_HPP
 
 #include "../module.hpp"
+#include <array>
+
+constexpr auto TITLE = "AION ZERO";
 
 class MainMenu : public Module {
 private:
-    const char* options[3] = {"Games", "Settings", "About"};
+    static constexpr std::array<const char*, 3> options = {"Games","Settings","About"};
 public:
     explicit MainMenu(display::LcdDisplay& display) : Module(display) {}
-    [[noreturn]] void loop() override;
+    [[nodiscard]] ModuleSwitchRequest loop() override;
+    void onEnter() override;
 };
 
 #endif //AION_ZERO_FMW_MAIN_MENU_HPP
