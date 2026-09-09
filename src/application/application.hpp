@@ -2,6 +2,7 @@
 #define AION_ZERO_FMW_APPLICATION_HPP
 
 #include "module.hpp"
+#include "../engine/input.hpp"
 #include <memory>
 
 class Application {

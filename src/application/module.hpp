@@ -17,7 +17,6 @@ public:
     virtual ~Module() = default;
 
     virtual ModuleSwitchRequest loop() = 0;
-    virtual void onEnter() = 0;
 };
 
 #endif //AION_ZERO_FMW_MODULE_HPP

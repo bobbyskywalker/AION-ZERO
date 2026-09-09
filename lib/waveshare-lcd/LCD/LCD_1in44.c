@@ -192,7 +192,7 @@ static void LCD_1IN44_SetAttributes(UBYTE Scan_dir)
     } else {
         LCD_1IN44.HEIGHT	= LCD_1IN44_HEIGHT;       
         LCD_1IN44.WIDTH   = LCD_1IN44_WIDTH;
-        MemoryAccessReg = 0X00;
+        MemoryAccessReg = 0X08;
     }
 
     // Set the read / write scan direction of the frame memory

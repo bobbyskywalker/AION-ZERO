@@ -82,7 +82,7 @@ target_include_directories(waveshare_fonts PUBLIC
 
 
 # ─────────────────────────────────────────────
-# Your application
+# App
 # ─────────────────────────────────────────────
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -96,6 +96,8 @@ add_executable(aion-zero-fmw
         src/application/application.cpp
         src/application/main_menu/main_menu.hpp
         src/application/main_menu/main_menu.cpp
+        src/engine/input.hpp
+        src/engine/input.cpp
 )
 
 target_link_libraries(aion-zero-fmw
