@@ -23,6 +23,7 @@ namespace display {
         explicit LcdDisplay(uint8_t orientation);
         ~LcdDisplay();
         void clear(uint16_t color) ;
+
         void drawString(
             uint16_t x,
             uint16_t y,
@@ -31,6 +32,15 @@ namespace display {
             uint16_t colorForeground,
             uint16_t colorBackground
         );
+
+        void drawSprite(
+            const unsigned char *image,
+            uint16_t x,
+            uint16_t y,
+            uint16_t imageWidth,
+            uint16_t imageHeight
+        );
+
         void update();
     };
 }

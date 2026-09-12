@@ -15,6 +15,16 @@ void display::LcdDisplay::update() {
     LCD_1IN44_Display(reinterpret_cast<UWORD *>(framebuffer_));
 }
 
+void display::LcdDisplay::drawSprite(
+    const unsigned char *image,
+    const uint16_t x,
+    const uint16_t y,
+    const uint16_t imageWidth,
+    const uint16_t imageHeight
+) {
+    Paint_DrawImage(image, x, y, imageWidth, imageHeight);
+}
+
 display::LcdDisplay::~LcdDisplay() {
     DEV_Module_Exit();
 }
