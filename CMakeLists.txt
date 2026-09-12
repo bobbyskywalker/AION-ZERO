@@ -98,6 +98,12 @@ add_executable(aion-zero-fmw
         src/application/main_menu/main_menu.cpp
         src/engine/input.hpp
         src/engine/input.cpp
+        src/application/games/ashforged_blade/Module_ASH.hpp
+        src/application/games/ashforged_blade/Game_ASH.hpp
+        src/application/games/ashforged_blade/Entity_ASH.hpp
+        src/application/games/ashforged_blade/Module_ASH.cpp
+        src/application/games/ashforged_blade/tempMap.hpp
+        src/application/games/ashforged_blade/Game_ASH.cpp
 )
 
 target_link_libraries(aion-zero-fmw

@@ -3,11 +3,13 @@
 
 #include "../module.hpp"
 #include <array>
+#include <optional>
 
 namespace MAIN_MENU_BUTTONS {
     constexpr uint8_t BUTTON_UP = 0;
     constexpr uint8_t BUTTON_DOWN = 1;
     constexpr uint8_t BUTTON_ENTER = 2;
+    constexpr uint8_t BUTTON_BACK = 3;
 }
 
 class MainMenu : public Module {
@@ -15,12 +17,17 @@ private:
     static constexpr std::array<const char*, 3> options_ = {"Games","Settings","About"};
     uint8_t selectedOption_ = 0;
 
+    static constexpr std::array<const char*, 1> gameOptions_ = {"Ashforged Blade"};
+    uint8_t selectedGame_ = 0;
+
     void drawRootMenu() const;
+    void drawGamesMenu() const;
     void drawAboutMenu() const;
 
     void processRootMenuState();
+    std::optional<ModuleSwitchRequest> processGamesMenuState();
     void processAboutMenuState();
-    void processMenuState();
+    std::optional<ModuleSwitchRequest> processMenuState();
 
     enum class MAIN_MENU_STATE {
         IN_ROOT,
@@ -36,6 +43,7 @@ public:
 };
 
 constexpr auto ROOT_TITLE = "AION ZERO";
+constexpr auto GAMES_TITLE = "GAMES";
 constexpr auto ABOUT_TITLE = "ABOUT";
 constexpr auto VERSION = "v0.0.1";
 constexpr auto GITHUB = "github.com/bobbyskywalker";

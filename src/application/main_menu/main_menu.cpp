@@ -8,23 +8,25 @@ extern "C" {
 
 [[nodiscard]] ModuleSwitchRequest MainMenu::loop() {
     while (true) {
-        this->processMenuState();
+        if (std::optional<ModuleSwitchRequest> event = this->processMenuState(); event.has_value()) {
+            return event.value();
+        }
         display_.update();
         sleep_ms(16);
-        printf("current option: %d\n", selectedOption_);
     }
-
-    return ModuleSwitchRequest::None;
 }
 
-void MainMenu::processMenuState() {
+std::optional<ModuleSwitchRequest> MainMenu::processMenuState() {
     switch (currentState_) {
         case MAIN_MENU_STATE::IN_ROOT:
             processRootMenuState();
             break;
-        case MAIN_MENU_STATE::IN_GAMES_MENU:
-            // todo
+        case MAIN_MENU_STATE::IN_GAMES_MENU: {
+            if (std::optional<ModuleSwitchRequest> event = processGamesMenuState(); event.has_value()) {
+                return event.value();
+            }
             break;
+        }
         case MAIN_MENU_STATE::IN_SETTINGS:
             // todo
             break;
@@ -34,6 +36,7 @@ void MainMenu::processMenuState() {
         default:
             break;
     }
+    return {};
 }
 
 void MainMenu::processRootMenuState() {
@@ -42,11 +45,11 @@ void MainMenu::processRootMenuState() {
 
     if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_UP))
         && selectedOption_ > 0) {
-        --selectedOption_;
+            --selectedOption_;
         }
     if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_DOWN))
         && selectedOption_ < options_.size() - 1) {
-        ++selectedOption_;
+            ++selectedOption_;
         }
     if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_ENTER))) {
         if (selectedOption_ == 0) {
@@ -59,9 +62,32 @@ void MainMenu::processRootMenuState() {
     }
 }
 
+std::optional<ModuleSwitchRequest> MainMenu::processGamesMenuState() {
+
+    this->drawGamesMenu();
+
+    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_UP))
+        && selectedGame_> 0) {
+            --selectedGame_;
+        }
+    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_DOWN))
+        && selectedGame_< options_.size() - 1) {
+            ++selectedGame_;
+        }
+    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_ENTER))) {
+        if (selectedGame_ == 0) {
+            return ModuleSwitchRequest::AshforgedBlade;
+        }
+    }
+    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_BACK))) {
+        currentState_ = MAIN_MENU_STATE::IN_ROOT;
+    }
+    return {};
+}
+
 void MainMenu::processAboutMenuState() {
     this->drawAboutMenu();
-    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_ENTER))) {
+    if (InputEngine::wasButtonPressed(InputEngine::BUTTONS.at(MAIN_MENU_BUTTONS::BUTTON_BACK))) {
         currentState_ = MAIN_MENU_STATE::IN_ROOT;
     }
 }
@@ -87,6 +113,32 @@ void MainMenu::drawRootMenu() const {
             display_.drawString(x, y, options_[i], Font12, BLUE, WHITE);
         } else {
             display_.drawString(x, y, options_[i], Font12, BLACK, WHITE);
+        }
+    }
+}
+
+// TODO: scrollable list menu
+void MainMenu::drawGamesMenu() const {
+    const uint16_t initialY = Font16.Height + 5;
+    const uint16_t initialOptionsY = initialY * 3;
+
+    this->display_.clear(BLACK);
+
+    const uint16_t titleWidth = strlen(GAMES_TITLE) * Font16.Width;
+    uint16_t x = (display::WIDTH - titleWidth) / 2;
+    display_.drawString(x, initialY, GAMES_TITLE, Font16, BLACK, WHITE);
+
+    for (std::size_t i = 0; i < gameOptions_.size(); ++i) {
+        constexpr uint8_t optionOffset = 20;
+
+        const uint16_t text_width = static_cast<uint16_t>(strlen(gameOptions_[i])) * Font12.Width;
+        x = (display::WIDTH - text_width) / 2;
+        const uint16_t y = initialOptionsY + static_cast<uint16_t>(i) * optionOffset;
+
+        if (i == selectedOption_) {
+            display_.drawString(x, y, gameOptions_[i], Font12, BLUE, WHITE);
+        } else {
+            display_.drawString(x, y, gameOptions_[i], Font12, BLACK, WHITE);
         }
     }
 }
