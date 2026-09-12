@@ -6,10 +6,10 @@ Game_ASH::Game_ASH(display::LcdDisplay& display) : display_(display) {}
 
 ModuleSwitchRequest Game_ASH::runGame() {
     while (true) {
-        display_.clear(WHITE);
+        this->display_.clear(BLACK);
         drawMap();
+        drawPlayer();
         this->display_.update();
-        printf("siema jestem w grze");
         sleep_ms(16);
     }
 }
@@ -25,10 +25,19 @@ void Game_ASH::drawTile(
 }
 
 void Game_ASH::drawMap() {
-    this->display_.clear(BLACK);
     for (uint8_t y = 0; y < 16; y++) {
         for (uint8_t x = 0; x < 16; x++) {
             drawTile(tile1, x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, TILE_SQ_SIZE, TILE_SQ_SIZE);
         }
     }
+}
+
+void Game_ASH::drawPlayer() {
+    drawTile(
+    player,
+        (display::WIDTH - PLAYER_SQ_SIZE) / 2,
+        (display::HEIGHT - PLAYER_SQ_SIZE) / 2,
+        PLAYER_SQ_SIZE,
+        PLAYER_SQ_SIZE
+    );
 }

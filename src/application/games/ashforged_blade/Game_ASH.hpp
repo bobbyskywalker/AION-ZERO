@@ -7,7 +7,8 @@
 #include "tempMap.hpp"
 #include "../../module.hpp"
 
-auto constexpr TILE_SQ_SIZE = 8;
+constexpr uint8_t TILE_SQ_SIZE = 8;
+constexpr uint8_t PLAYER_SQ_SIZE = 16;
 
 enum class Game_ASH_State {
     RUNNING,
@@ -26,6 +27,9 @@ public:
     explicit Game_ASH(display::LcdDisplay& display);
 
     void drawMap();
+
+    void drawPlayer();
+
     ModuleSwitchRequest runGame();
 };
 
