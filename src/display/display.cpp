@@ -1,6 +1,6 @@
 #include "display.hpp"
 
-display::LcdDisplay::LcdDisplay(uint8_t orientation) {
+display::LcdDisplay::LcdDisplay(const uint8_t orientation) {
     DEV_Module_Init();
     LCD_1IN44_Init(orientation);
     Paint_NewImage(framebuffer_, WIDTH, HEIGHT, ROTATE_0, WHITE);
