@@ -102,8 +102,14 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/Game_ASH.hpp
         src/application/games/ashforged_blade/Entity_ASH.hpp
         src/application/games/ashforged_blade/Module_ASH.cpp
-        src/application/games/ashforged_blade/tempMap.hpp
+        src/application/games/ashforged_blade/maps/lvl_1.hpp
         src/application/games/ashforged_blade/Game_ASH.cpp
+        src/application/games/ashforged_blade/player.hpp
+        src/application/games/ashforged_blade/maps/lvl_1.cpp
+        src/application/games/ashforged_blade/util/draw.hpp
+        src/application/games/ashforged_blade/util/draw.cpp
+        src/application/games/ashforged_blade/maps/base_map.hpp
+        src/application/games/ashforged_blade/maps/lvl1_assets.hpp
 )
 
 target_link_libraries(aion-zero-fmw

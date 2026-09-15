@@ -2,7 +2,9 @@
 
 #include "Module_ASH.hpp"
 
-Game_ASH::Game_ASH(display::LcdDisplay& display) : display_(display) {}
+Game_ASH::Game_ASH(display::LcdDisplay& display) : display_(display) {
+    this->gameMap_ = std::make_unique<MapLVL1>();
+}
 
 ModuleSwitchRequest Game_ASH::runGame() {
     while (true) {
@@ -14,27 +16,13 @@ ModuleSwitchRequest Game_ASH::runGame() {
     }
 }
 
-void Game_ASH::drawTile(
-    const unsigned char* image,
-    const uint16_t x,
-    const uint16_t y,
-    const uint16_t imageWidth,
-    const uint16_t imageHeight
-) {
-    this->display_.drawSprite(image, x, y, imageWidth, imageHeight);
-}
-
 void Game_ASH::drawMap() {
-    for (uint8_t y = 0; y < 16; y++) {
-        for (uint8_t x = 0; x < 16; x++) {
-            drawTile(tile1, x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, TILE_SQ_SIZE, TILE_SQ_SIZE);
-        }
-    }
+    this->gameMap_->draw(this->display_);
 }
 
-void Game_ASH::drawPlayer() {
-    drawTile(
-    player,
+void Game_ASH::drawPlayer() const {
+    drawSprite(
+        player,
         (display::WIDTH - PLAYER_SQ_SIZE) / 2,
         (display::HEIGHT - PLAYER_SQ_SIZE) / 2,
         PLAYER_SQ_SIZE,
