@@ -4,6 +4,7 @@
 
 Game_ASH::Game_ASH(display::LcdDisplay& display) : display_(display) {
     this->gameMap_ = std::make_unique<MapLVL1>();
+    this->player_ = std::make_unique<Player>(INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE, INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE);
 }
 
 ModuleSwitchRequest Game_ASH::runGame() {
@@ -22,9 +23,9 @@ void Game_ASH::drawMap() {
 
 void Game_ASH::drawPlayer() const {
     drawSprite(
-        player,
-        (display::WIDTH - PLAYER_SQ_SIZE) / 2,
-        (display::HEIGHT - PLAYER_SQ_SIZE) / 2,
+        IDLE,//tmp
+        player_->getPosX(),
+        player_->getPosY(),
         PLAYER_SQ_SIZE,
         PLAYER_SQ_SIZE
     );

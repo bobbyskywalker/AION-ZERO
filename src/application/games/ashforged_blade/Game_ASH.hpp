@@ -8,7 +8,7 @@
 #include "maps/lvl_1.hpp"
 #include "../../module.hpp"
 #include "util/draw.hpp"
-#include "player.hpp"
+#include "entity/player.hpp"
 
 constexpr uint8_t PLAYER_SQ_SIZE = 16;
 
@@ -22,6 +22,8 @@ class Game_ASH {
 private:
     display::LcdDisplay& display_;
     std::unique_ptr<BaseMap> gameMap_;
+
+    std::unique_ptr<Player> player_;
 
     void processCurrentState();
 public:

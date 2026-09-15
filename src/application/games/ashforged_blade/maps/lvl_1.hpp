@@ -10,6 +10,8 @@
 #include "base_map.hpp"
 
 constexpr uint8_t TILE_SQ_SIZE = 8;
+constexpr uint8_t INITIAL_PLAYER_TILE_X = 7;
+constexpr uint8_t INITIAL_PLAYER_TILE_Y = 9;
 
 class MapLVL1 : public BaseMap {
 public:
@@ -36,7 +38,6 @@ private:
         {{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},
         {{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}} // y = 15
     }};
-
 };
 
 #endif //AION_ZERO_FMW_TEMPMAP_HPP
