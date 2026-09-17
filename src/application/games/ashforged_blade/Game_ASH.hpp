@@ -50,6 +50,7 @@ private:
     void processPausedState();
     void processMenuState();
 
+    void drainInputQueue() const;
     void updatePlayer() const;
 
 public:

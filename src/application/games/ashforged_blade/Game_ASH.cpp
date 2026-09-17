@@ -68,16 +68,24 @@ void Game_ASH::drawPlayer() const {
 }
 
 void Game_ASH::updatePlayer() const {
+    drainInputQueue();
+    this->player_->updateJump();
+}
+
+void Game_ASH::drainInputQueue() const {
     while (!this->eventQueue_->empty()) {
         if (const auto [state, button] = eventQueue_->front();
             state == InputEngine::ButtonState::PRESSED
         ) {
             switch (button) {
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
-                    this->player_->setPosX(this->player_->getPosX() - STEP_SIZE);
+                    this->player_->moveHorizontally(true);
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
-                    this->player_->setPosX(this->player_->getPosX() + STEP_SIZE);
+                    this->player_->moveHorizontally(false);
+                    break;
+                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
+                    this->player_->startJump();
                     break;
                 default:
                     break;

@@ -10,7 +10,6 @@
 #include "base_map.hpp"
 
 constexpr uint8_t TILE_SQ_SIZE = 8;
-constexpr uint8_t STEP_SIZE = 4;
 constexpr uint8_t INITIAL_PLAYER_TILE_X = 7;
 constexpr uint8_t INITIAL_PLAYER_TILE_Y = 9;
 
