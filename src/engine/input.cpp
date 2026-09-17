@@ -11,13 +11,14 @@ void InputEngine::registerButtons() {
     }
 }
 
-InputEngine::ButtonState getButtonState(const uint8_t& pin) {
+InputEngine::ButtonState InputEngine::getButtonState(const uint8_t& pin) {
     if (!gpio_get(pin)) {
-        return InputEngine::ButtonState::PRESSED;
+        return ButtonState::PRESSED;
     }
-    return InputEngine::ButtonState::RELEASED;
+    return ButtonState::RELEASED;
 }
 
+/* prevents constant input on hold */
 bool InputEngine::wasButtonPressed(const uint8_t& pin) {
     static std::array<ButtonTracker, BUTTONS.size()> trackers{};
 
@@ -25,4 +26,13 @@ bool InputEngine::wasButtonPressed(const uint8_t& pin) {
         !gpio_get(pin),
         time_us_64()
     );
+}
+
+/* event emitting helper, takes a consumer-pointer to write events to */
+void InputEngine::inputListener(std::queue<ButtonEvent> &eventQueue) {
+    for (auto const& pin : BUTTONS) {
+        if (!gpio_get(pin)) {
+            eventQueue.push(ButtonEvent{getButtonState(pin), pin});
+        }
+    }
 }

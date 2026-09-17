@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <array>
+#include <queue>
 
 namespace InputEngine {
 
@@ -36,9 +37,16 @@ namespace InputEngine {
         RELEASED
     };
 
+    struct ButtonEvent {
+        ButtonState state;
+        uint8_t button;
+    };
+
     void            registerButtons();
     ButtonState     getButtonState(const uint8_t& pin);
     bool            wasButtonPressed(const uint8_t& pin);
+
+    void            inputListener(std::queue<ButtonEvent> & eventQueue);
 
 }
 #endif //AION_ZERO_FMW_INPUT_HPP

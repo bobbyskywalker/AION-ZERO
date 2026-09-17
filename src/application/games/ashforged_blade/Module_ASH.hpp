@@ -4,11 +4,6 @@
 #include "Game_ASH.hpp"
 #include "../../module.hpp"
 
-enum class Module_ASH_State {
-    MENU,
-    IN_GAME
-};
-
 class Module_ASH : public Module {
 private:
     Game_ASH game_;

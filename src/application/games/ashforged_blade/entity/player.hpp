@@ -23,6 +23,8 @@ public:
 
     [[nodiscard]] uint16_t getPosX() const { return posX_; }
     [[nodiscard]] uint16_t getPosY() const { return posY_; }
+    void setPosX(const uint16_t pos) { this->posX_ = pos; }
+    void setPosY(const uint16_t pos) { this->posY_ = pos; }
     PlayerState getCurrentState();
 };
 
