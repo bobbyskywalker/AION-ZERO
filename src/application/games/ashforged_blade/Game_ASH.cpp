@@ -16,7 +16,7 @@ ModuleSwitchRequest Game_ASH::runGame() {
         processCurrentState();
         const uint64_t frameUs = time_us_64() - frameStart;
 
-        if (constexpr uint64_t targetUs = 33'000; frameUs < targetUs) {
+        if (constexpr uint64_t targetUs = FPS; frameUs < targetUs) {
             sleep_us(targetUs - frameUs);
         }
     }
@@ -58,18 +58,13 @@ void Game_ASH::drawMap() {
 }
 
 void Game_ASH::drawPlayer() const {
-    drawSprite(
-        IDLE,
-        player_->getPosX(),
-        player_->getPosY(),
-        PLAYER_SQ_SIZE,
-        PLAYER_SQ_SIZE
-    );
+    this->player_->draw();
 }
 
 void Game_ASH::updatePlayer() const {
     drainInputQueue();
     this->player_->updateJump();
+    this->player_->updateAttack();
 }
 
 void Game_ASH::drainInputQueue() const {
@@ -86,6 +81,9 @@ void Game_ASH::drainInputQueue() const {
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
                     this->player_->startJump();
+                    break;
+                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
+                    this->player_->startAttack();
                     break;
                 default:
                     break;

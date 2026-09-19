@@ -9,10 +9,9 @@
 #include "maps/lvl_1.hpp"
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
-#include "util/draw.hpp"
 #include "entity/player.hpp"
 
-constexpr uint8_t PLAYER_SQ_SIZE = 16;
+static uint64_t constexpr FPS =  33'000;
 
 enum class Game_ASH_State {
     MENU,
