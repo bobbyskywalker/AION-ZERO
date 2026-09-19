@@ -64,7 +64,6 @@ void Game_ASH::drawPlayer() const {
 void Game_ASH::updatePlayer() const {
     drainInputQueue();
     this->player_->updateJump();
-    this->player_->updateAttack();
 }
 
 void Game_ASH::drainInputQueue() const {
@@ -83,7 +82,7 @@ void Game_ASH::drainInputQueue() const {
                     this->player_->startJump();
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
-                    this->player_->startAttack();
+                    this->player_->attack();
                     break;
                 default:
                     break;

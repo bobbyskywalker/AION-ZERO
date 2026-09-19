@@ -6,15 +6,7 @@ Player::Player(const uint16_t initialX, const uint16_t initialY)
     : animator_(*this), posX_(initialX), posY_(initialY), currentState_(PlayerState::IDLE) {}
 
 void Player::draw() {
-    switch (currentState_) {
-        case PlayerState::FALLING:
-        case PlayerState::JUMPING:
-        case PlayerState::IDLE:
-            animator_.drawNextFrameForCurrentState(currentState_);
-            break;
-        // case PlayerState::JUMPING:
-
-    }
+    animator_.drawNextFrameForCurrentState(currentState_);
 }
 
 void Player::moveHorizontally(const bool left) {
@@ -44,19 +36,19 @@ void Player::updateJump() {
     }
 }
 
-void Player::startAttack() {
+void Player::attack() {
     if (currentState_ != PlayerState::JUMPING && currentState_ != PlayerState::FALLING) {
         this->switchState(PlayerState::ATTACKING);
-    }
-}
-
-void Player::updateAttack() {
-    if (currentState_ == PlayerState::ATTACKING) {
-
     }
 }
 
 void Player::switchState(const PlayerState state) {
     this->currentState_ = state;
     this->animator_.resetFrameAndTimer();
+}
+
+void Player::animationEndedForStateEvent(const PlayerState state) {
+    if (state == PlayerState::ATTACKING) {
+        this->switchState(PlayerState::IDLE);
+    }
 }

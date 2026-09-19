@@ -14,6 +14,10 @@ private:
     uint16_t posX_;
     uint16_t posY_;
     uint16_t jumpFrom_{};
+
+    uint8_t currentAttackFrame;
+    uint8_t attackFPS = 8;
+
     PlayerState currentState_;
 
     static constexpr uint16_t STEP_SIZE = TILE_SQ_SIZE / 2;
@@ -36,8 +40,9 @@ public:
     void moveHorizontally(bool left);
     void startJump();
     void updateJump();
-    void startAttack();
-    void updateAttack();
+    void attack();
+
+    void animationEndedForStateEvent(PlayerState state);
 };
 
 #endif //AION_ZERO_FMW_PLAYER_HPP
