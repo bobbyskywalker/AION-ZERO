@@ -21,5 +21,9 @@ void drawSprite(
     uint8_t height
 );
 
-
+void drawPixel(
+    uint16_t x,
+    uint16_t y,
+    uint16_t color
+);
 #endif //AION_ZERO_FMW_DRAW_HPP

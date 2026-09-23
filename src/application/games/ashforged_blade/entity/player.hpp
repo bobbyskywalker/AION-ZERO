@@ -13,6 +13,7 @@ private:
 
     uint16_t posX_;
     uint16_t posY_;
+    uint16_t cameraPosX_{};
     uint16_t jumpFrom_{};
 
     uint8_t currentAttackFrame;
@@ -31,13 +32,15 @@ public:
 
     [[nodiscard]] uint16_t getPosX() const { return posX_; }
     [[nodiscard]] uint16_t getPosY() const { return posY_; }
+    [[nodiscard]] uint16_t getCameraPosX() const { return cameraPosX_; }
     void setPosX(const uint16_t pos) { this->posX_ = pos; }
     void setPosY(const uint16_t pos) { this->posY_ = pos; }
+    void setCameraPosX(const uint16_t pos) { this->cameraPosX_ = pos; }
     PlayerState getCurrentState();
 
     void draw();
 
-    void moveHorizontally(bool left);
+    void moveHorizontally(bool left, uint16_t mapWidth) ;
     void startJump();
     void updateJump();
     void attack();

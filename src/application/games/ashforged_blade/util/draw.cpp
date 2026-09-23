@@ -34,3 +34,7 @@ void drawSprite(const uint8_t* image, const int x, const int y, const uint8_t wi
         }
     }
 }
+
+void drawPixel(const uint16_t x, const uint16_t y, const uint16_t color) {
+    Paint_SetPixel(x, y, color);
+}

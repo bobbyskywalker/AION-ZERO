@@ -40,6 +40,7 @@ void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
     updatePlayer();
+    updateMap();
     drawMap();
     drawPlayer();
     this->display_.update();
@@ -63,7 +64,12 @@ void Game_ASH::drawPlayer() const {
 
 void Game_ASH::updatePlayer() const {
     drainInputQueue();
+    this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
     this->player_->updateJump();
+}
+
+void Game_ASH::updateMap() const {
+    gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE);
 }
 
 void Game_ASH::drainInputQueue() const {
@@ -73,10 +79,10 @@ void Game_ASH::drainInputQueue() const {
         ) {
             switch (button) {
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
-                    this->player_->moveHorizontally(true);
+                    this->player_->moveHorizontally(true, this->gameMap_->getMapWidth());
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
-                    this->player_->moveHorizontally(false);
+                    this->player_->moveHorizontally(false, this->gameMap_->getMapWidth());
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
                     this->player_->startJump();

@@ -9,8 +9,20 @@ void Player::draw() {
     animator_.drawNextFrameForCurrentState(currentState_);
 }
 
-void Player::moveHorizontally(const bool left) {
-    posX_ = this->posX_ - (left ? STEP_SIZE : static_cast<uint16_t>(-STEP_SIZE));
+void Player::moveHorizontally(const bool left, const uint16_t mapWidth) {
+    if (left) {
+        if (this->posX_ >= STEP_SIZE) {
+            this->posX_ -= STEP_SIZE;
+        } else {
+            this->posX_ = 0;
+        }
+    } else {
+        if (this->posX_ + STEP_SIZE < mapWidth * TILE_SQ_SIZE) {
+            this->posX_ += STEP_SIZE;
+        } else {
+            this->posX_ = mapWidth * TILE_SQ_SIZE - STEP_SIZE;
+        }
+    }
 }
 
 void Player::startJump() {

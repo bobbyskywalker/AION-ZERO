@@ -52,6 +52,8 @@ private:
     void drainInputQueue() const;
     void updatePlayer() const;
 
+    void updateMap() const;
+
 public:
     explicit Game_ASH(display::LcdDisplay& display);
 
