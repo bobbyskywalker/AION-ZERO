@@ -59,3 +59,20 @@ void MapLVL1::updateCamera(const uint16_t playerPosX) {
         }
     }
 }
+
+bool MapLVL1::isWalkableTileOnPos(const uint16_t posX,const uint16_t posY) const {
+    for (uint8_t y = 0; y <= 2; ++y) {
+        if (posY < y) {
+            continue;
+        }
+        if (MAP_LVL1[posY - y][posX] == 1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool MapLVL1::isGroundOnPos(const uint16_t posY) const {
+    return posY == INITIAL_PLAYER_TILE_Y;
+}

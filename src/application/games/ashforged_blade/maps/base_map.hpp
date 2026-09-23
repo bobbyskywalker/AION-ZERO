@@ -8,12 +8,18 @@ constexpr uint8_t INITIAL_PLAYER_TILE_Y = 11;
 
 class BaseMap {
 public:
+    static constexpr size_t MAP_HEIGHT = 16;
+    static constexpr size_t MAP_WIDTH = 64;
+    static constexpr size_t CAMERA_SIZE = 16;
+
     virtual ~BaseMap() = default;
     virtual void draw(display::LcdDisplay& display) = 0;
     virtual void drawBg(display::LcdDisplay& display) = 0;
     virtual void updateCamera(uint16_t playerPos) = 0;
     [[nodiscard]] virtual uint16_t getCameraX() const = 0;
     [[nodiscard]] virtual uint16_t getMapWidth() const = 0;
+    [[nodiscard]] virtual bool isGroundOnPos(uint16_t posY) const = 0;
+    [[nodiscard]] virtual bool isWalkableTileOnPos(uint16_t posX, uint16_t posY) const = 0;
 };
 
 #endif //AION_ZERO_FMW_BASE_MAP_HPP

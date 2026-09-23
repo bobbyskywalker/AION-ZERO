@@ -27,9 +27,8 @@ public:
 
     [[nodiscard]] uint16_t getMapWidth() const override { return MAP_WIDTH; }
 
-    static constexpr size_t MAP_HEIGHT = 16;
-    static constexpr size_t MAP_WIDTH = 64;
-    static constexpr size_t CAMERA_SIZE = 16;
+    [[nodiscard]] bool isWalkableTileOnPos(uint16_t posX, uint16_t posY) const override;
+    [[nodiscard]] bool isGroundOnPos(uint16_t posY) const override;
 
 private:
     uint8_t scrollX_ = 0;

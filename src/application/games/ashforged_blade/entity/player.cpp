@@ -2,8 +2,8 @@
 
 #include "../maps/lvl_1.hpp"
 
-Player::Player(const uint16_t initialX, const uint16_t initialY)
-    : animator_(*this), posX_(initialX), posY_(initialY), currentState_(PlayerState::IDLE) {}
+Player::Player(const uint16_t initialX, const uint16_t initialY, BaseMap & map)
+    : animator_(*this), map_(map), posX_(initialX), posY_(initialY) , currentState_(PlayerState::IDLE){}
 
 void Player::draw() {
     animator_.drawNextFrameForCurrentState(currentState_);
@@ -23,6 +23,9 @@ void Player::moveHorizontally(const bool left, const uint16_t mapWidth) {
             this->posX_ = mapWidth * TILE_SQ_SIZE - STEP_SIZE;
         }
     }
+    if (!this->map_.isWalkableTileOnPos(this->posX_, this->posY_) && this->currentState_ != PlayerState::FALLING) {
+        switchState(PlayerState::FALLING);
+    }
 }
 
 void Player::startJump() {
@@ -35,14 +38,23 @@ void Player::startJump() {
 void Player::updateJump() {
     if (currentState_ == PlayerState::JUMPING) {
         posY_ -= JUMP_STEP_SIZE;
+
         if (jumpFrom_ - posY_ >= JUMP_HEIGHT) {
             this->switchState(PlayerState::FALLING);
         }
     }
     else if (currentState_ == PlayerState::FALLING) {
         posY_ += JUMP_STEP_SIZE;
-        if (posY_ >= jumpFrom_) {
-            posY_ = jumpFrom_;
+
+        const uint16_t tileX = posX_ / TILE_SQ_SIZE;
+        const uint16_t tileY = posY_ / TILE_SQ_SIZE;
+
+        if (this->map_.isWalkableTileOnPos(tileX, tileY + 2)) {
+            posY_ = tileY * TILE_SQ_SIZE;
+            this->switchState(PlayerState::IDLE);
+        }
+        else if (this->map_.isGroundOnPos(tileY)) {
+            posY_ = INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE;
             this->switchState(PlayerState::IDLE);
         }
     }
