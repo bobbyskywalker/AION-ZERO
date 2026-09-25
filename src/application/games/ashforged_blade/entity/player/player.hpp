@@ -5,7 +5,7 @@
 
 #include "player_animator.hpp"
 #include "player_state.hpp"
-#include "../maps/lvl_1.hpp"
+#include "../../maps/lvl_1.hpp"
 
 class Player {
 private:

@@ -108,12 +108,12 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/util/draw.cpp
         src/application/games/ashforged_blade/maps/base_map.hpp
         src/application/games/ashforged_blade/maps/lvl1_assets.hpp
-        src/application/games/ashforged_blade/entity/player.hpp
-        src/application/games/ashforged_blade/entity/player_assets.hpp
-        src/application/games/ashforged_blade/entity/player.cpp
-        src/application/games/ashforged_blade/entity/player_animator.cpp
-        src/application/games/ashforged_blade/entity/player_animator.hpp
-        src/application/games/ashforged_blade/entity/player_state.hpp
+        src/application/games/ashforged_blade/entity/player/player.hpp
+        src/application/games/ashforged_blade/entity/player/player_assets.hpp
+        src/application/games/ashforged_blade/entity/player/player.cpp
+        src/application/games/ashforged_blade/entity/player/player_animator.cpp
+        src/application/games/ashforged_blade/entity/player/player_animator.hpp
+        src/application/games/ashforged_blade/entity/player/player_state.hpp
 )
 
 target_link_libraries(aion-zero-fmw

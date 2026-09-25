@@ -5,8 +5,8 @@
 
 #include "player_assets.hpp"
 #include "player_state.hpp"
-#include "../util/draw.hpp"
-#include "../maps/base_map.hpp"
+#include "../../util/draw.hpp"
+#include "../../maps/base_map.hpp"
 
 class Player;
 enum class PlayerState;

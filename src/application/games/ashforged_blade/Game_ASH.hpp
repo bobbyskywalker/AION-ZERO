@@ -9,7 +9,7 @@
 #include "maps/lvl_1.hpp"
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
-#include "entity/player.hpp"
+#include "entity/player/player.hpp"
 
 static uint64_t constexpr FPS =  33'000;
 

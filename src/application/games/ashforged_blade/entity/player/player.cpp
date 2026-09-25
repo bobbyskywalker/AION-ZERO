@@ -1,6 +1,6 @@
 #include "player.hpp"
 
-#include "../maps/lvl_1.hpp"
+#include "../../maps/lvl_1.hpp"
 
 Player::Player(const uint16_t initialX, const uint16_t initialY, BaseMap & map)
     : animator_(*this), map_(map), posX_(initialX), posY_(initialY) , currentState_(PlayerState::IDLE){}
