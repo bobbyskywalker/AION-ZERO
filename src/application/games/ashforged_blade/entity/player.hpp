@@ -36,6 +36,8 @@ public:
     [[nodiscard]] uint16_t getPosX() const { return posX_; }
     [[nodiscard]] uint16_t getPosY() const { return posY_; }
     [[nodiscard]] uint16_t getCameraPosX() const { return cameraPosX_; }
+    [[nodiscard]] uint16_t getTilePosX() const { return posX_ / TILE_SQ_SIZE; }
+    [[nodiscard]] uint16_t getTilePosY() const { return posY_ / TILE_SQ_SIZE; }
     void setPosX(const uint16_t pos) { this->posX_ = pos; }
     void setPosY(const uint16_t pos) { this->posY_ = pos; }
     void setCameraPosX(const uint16_t pos) { this->cameraPosX_ = pos; }

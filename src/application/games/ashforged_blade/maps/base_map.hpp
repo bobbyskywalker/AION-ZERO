@@ -5,6 +5,7 @@ constexpr uint8_t TILE_SQ_SIZE = 8;
 constexpr uint8_t PLAYER_SQ_SIZE = 16;
 constexpr uint8_t INITIAL_PLAYER_TILE_X = 7;
 constexpr uint8_t INITIAL_PLAYER_TILE_Y = 11;
+constexpr uint8_t PLAYER_TO_WALKABLE_TILE_OFFSET = 2;
 
 class BaseMap {
 public:
