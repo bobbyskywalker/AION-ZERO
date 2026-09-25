@@ -114,6 +114,9 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/entity/player/player_animator.cpp
         src/application/games/ashforged_blade/entity/player/player_animator.hpp
         src/application/games/ashforged_blade/entity/player/player_state.hpp
+        src/application/games/ashforged_blade/entity/enemy/enemy.cpp
+        src/application/games/ashforged_blade/entity/enemy/enemy.hpp
+        src/application/games/ashforged_blade/entity/base_entity.hpp
 )
 
 target_link_libraries(aion-zero-fmw
