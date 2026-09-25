@@ -26,4 +26,13 @@ void drawPixel(
     uint16_t y,
     uint16_t color
 );
+
+void drawRectangle(
+    uint16_t xStart,
+    uint16_t yStart,
+    uint16_t xEnd,
+    uint16_t yEnd,
+    uint16_t color
+);
+
 #endif //AION_ZERO_FMW_DRAW_HPP

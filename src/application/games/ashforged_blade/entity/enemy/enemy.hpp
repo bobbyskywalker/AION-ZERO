@@ -3,10 +3,14 @@
 
 #include <cstdint>
 
-class Enemy {
+#include "../base_entity.hpp"
+
+class Enemy : public BaseEntity {
 private:
-    uint8_t posX_;
-    uint8_t posY_;
+
+public:
+    void draw() override;
+    void update();
 };
 
 

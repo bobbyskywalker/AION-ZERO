@@ -38,3 +38,13 @@ void drawSprite(const uint8_t* image, const int x, const int y, const uint8_t wi
 void drawPixel(const uint16_t x, const uint16_t y, const uint16_t color) {
     Paint_SetPixel(x, y, color);
 }
+
+void drawRectangle(
+    const uint16_t xStart,
+    const uint16_t yStart,
+    const uint16_t xEnd,
+    const uint16_t yEnd,
+    const uint16_t color
+) {
+    Paint_DrawRectangle(xStart, yStart, xEnd, yEnd, color, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+}

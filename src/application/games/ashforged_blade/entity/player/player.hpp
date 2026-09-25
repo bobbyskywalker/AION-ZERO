@@ -11,7 +11,6 @@ class Player : public BaseEntity {
 private:
     PlayerAnimator animator_;
 
-    uint16_t cameraPosX_{};
     uint16_t jumpFrom_{};
 
     uint8_t currentAttackFrame{};
@@ -27,7 +26,7 @@ private:
     bool isPlayerOnWalkableTile();
 
 public:
-    explicit Player(uint16_t initialX, uint16_t initialY, BaseMap & map);
+    explicit Player(uint16_t initialX, uint16_t initialY, uint16_t initialHealth, BaseMap & map);
 
     PlayerState getCurrentState();
 
@@ -39,6 +38,8 @@ public:
     void attack();
 
     void animationEndedForStateEvent(PlayerState state);
+
+    static constexpr uint16_t START_HEALTH = 100;
 };
 
 #endif //AION_ZERO_FMW_PLAYER_HPP

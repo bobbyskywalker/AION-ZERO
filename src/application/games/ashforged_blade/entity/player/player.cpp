@@ -2,11 +2,12 @@
 
 #include "../../maps/lvl_1.hpp"
 
-Player::Player(const uint16_t initialX, const uint16_t initialY, BaseMap & map)
-    : BaseEntity(initialX, initialY, map), animator_(*this), currentState_(PlayerState::IDLE)
+Player::Player(const uint16_t initialX, const uint16_t initialY, const uint16_t initialHealth, BaseMap & map)
+    : BaseEntity(initialX, initialY, initialHealth, map), animator_(*this), currentState_(PlayerState::IDLE)
 {}
 
 void Player::draw() {
+    drawHealthBar(this->health_, START_HEALTH);
     animator_.drawNextFrameForCurrentState(currentState_);
 }
 
