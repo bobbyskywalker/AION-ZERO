@@ -7,10 +7,19 @@
 
 class Enemy : public BaseEntity {
 private:
+    [[nodiscard]] bool isInCameraView() const;
+    static constexpr uint8_t STEP_SIZE = TILE_SQ_SIZE / 8;
 
 public:
+    explicit Enemy(
+        uint16_t initialX,
+        uint16_t initialY,
+        uint16_t initialHealth,
+        BaseMap & map
+    );
+
     void draw() override;
-    void update();
+    void followPlayer(uint16_t playerPosX);
 };
 
 

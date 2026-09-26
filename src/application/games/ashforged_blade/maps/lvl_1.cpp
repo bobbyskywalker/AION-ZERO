@@ -5,9 +5,9 @@
 void MapLVL1::draw(display::LcdDisplay &display) {
     drawBg(display);
 
-    for (uint8_t y = 0; y < 16; ++y) {
-        for (uint8_t x = 0; x < 16; ++x) {
-            if (const uint8_t tile = camera_[y][x]; tile == 1) {
+    for (uint8_t y = 0; y < MAP_HEIGHT; ++y) {
+        for (uint8_t x = 0; x < CAMERA_SIZE; ++x) {
+            if (const uint8_t tile = camera_[y][x]; tile == MapDescription::TILE_WALKABLE_ID) {
                 drawTile(
                     display,
                     TILE_WALKABLE,
@@ -22,26 +22,20 @@ void MapLVL1::draw(display::LcdDisplay &display) {
 }
 
 void MapLVL1::drawBg(display::LcdDisplay &display) {
-    for (uint8_t y = 0; y < 128; y++) {
-        for (uint8_t x = 0; x < 128; x++) {
-
-            const uint8_t srcX = (x + this->scrollX_) % 128;
-
-            const uint16_t index = (y * 128 + srcX) * 2;
-
+    for (uint8_t y = 0; y < display::HEIGHT; y++) {
+        for (uint8_t x = 0; x < display::WIDTH; x++) {
+            const uint8_t srcX = (x + this->scrollX_) % display::WIDTH;
+            const uint16_t index = (y * display::WIDTH + srcX) * 2;
             const uint16_t color = BACKGROUND[index] | BACKGROUND[index + 1] << 8;
-
             drawPixel(x, y, color);
         }
     }
 }
 
 void MapLVL1::updateCamera(const uint16_t playerPosX) {
-    const int16_t screenTileX =
-        static_cast<int16_t>(playerPosX) -
-        static_cast<int16_t>(cameraX_);
-
-    if (screenTileX >= CAMERA_SIZE) {
+    if (const uint16_t screenTileX = static_cast<int16_t>(playerPosX) - static_cast<int16_t>(cameraX_);
+            screenTileX >= CAMERA_SIZE)
+    {
         cameraX_ = playerPosX - CAMERA_SIZE + 1;
     }
 
@@ -61,11 +55,12 @@ void MapLVL1::updateCamera(const uint16_t playerPosX) {
 }
 
 bool MapLVL1::isWalkableTileOnPos(const uint16_t posX,const uint16_t posY) const {
+    // todo: throw 2 to const if this offset persists
     for (uint8_t y = 0; y <= 2; ++y) {
         if (posY < y) {
             continue;
         }
-        if (MAP_LVL1[posY - y][posX] == 1) {
+        if (MAP_LVL1[posY - y][posX] == MapDescription::TILE_WALKABLE_ID) {
             return true;
         }
     }
@@ -75,4 +70,18 @@ bool MapLVL1::isWalkableTileOnPos(const uint16_t posX,const uint16_t posY) const
 
 bool MapLVL1::isGroundOnPos(const uint16_t posY) const {
     return posY == INITIAL_PLAYER_TILE_Y;
+}
+
+std::vector<std::pair<uint8_t, uint8_t>> MapLVL1::provideEnemyCoordinates() {
+    std::vector<std::pair<uint8_t, uint8_t>> coordinates;
+
+    for (uint8_t y = 0; y < MAP_HEIGHT; ++y) {
+        for (uint8_t x = 0; x < MAP_WIDTH; ++x) {
+            if (MAP_LVL1[y][x] == MapDescription::ENEMY_POS_ID) {
+                coordinates.emplace_back(x, y);
+            }
+        }
+    }
+
+    return coordinates;
 }

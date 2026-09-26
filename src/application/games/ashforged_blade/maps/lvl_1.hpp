@@ -26,9 +26,12 @@ public:
     void setCameraX(const uint16_t cameraX) { this->cameraX_ = cameraX; }
 
     [[nodiscard]] uint16_t getMapWidth() const override { return MAP_WIDTH; }
+    [[nodiscard]] uint16_t getMapHeight() const override { return MAP_HEIGHT; }
 
     [[nodiscard]] bool isWalkableTileOnPos(uint16_t posX, uint16_t posY) const override;
     [[nodiscard]] bool isGroundOnPos(uint16_t posY) const override;
+
+    [[nodiscard]] std::vector<std::pair<uint8_t, uint8_t> > provideEnemyCoordinates() override;
 
 private:
     uint8_t scrollX_ = 0;
@@ -171,7 +174,7 @@ private:
             // y = 13 - standing surface
             {
                 {
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

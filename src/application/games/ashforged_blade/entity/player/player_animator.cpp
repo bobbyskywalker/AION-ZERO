@@ -11,12 +11,12 @@ void PlayerAnimator::drawNextFrameForCurrentState(const PlayerState state) {
     if (state == PlayerState::IDLE || state == PlayerState::JUMPING || state == PlayerState::FALLING) {
         updateFrameAndTimer(IDLE_FRAMES, IDLE_FPS);
         drawSprite(
-            IDLE_FRAMES[currentFrame_], screenX, player_.getPosY(), PLAYER_SQ_SIZE, PLAYER_SQ_SIZE
+            IDLE_FRAMES[currentFrame_], screenX, player_.getPosY(), ENTITY_SQ_SIZE, ENTITY_SQ_SIZE
         );
     } else if (state == PlayerState::ATTACKING) {
         updateFrameAndTimer(ATTACK_FRAMES, ATTACK_FPS);
         drawSprite(
-            ATTACK_FRAMES[currentFrame_], screenX, player_.getPosY(), PLAYER_SQ_SIZE, PLAYER_SQ_SIZE
+            ATTACK_FRAMES[currentFrame_], screenX, player_.getPosY(), ENTITY_SQ_SIZE, ENTITY_SQ_SIZE
         );
         if (currentFrame_ == std::size(ATTACK_FRAMES) - 1) {
             this->player_.animationEndedForStateEvent(PlayerState::ATTACKING);

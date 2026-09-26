@@ -16,7 +16,7 @@ protected:
 
     static constexpr uint8_t HEALTH_BAR_ABOVE_ENTITY_OFFSET = 2;
     static constexpr uint8_t HEALTH_BAR_HEIGHT = 2;
-    static constexpr uint16_t HEALTH_BAR_WIDTH = PLAYER_SQ_SIZE;
+    static constexpr uint16_t HEALTH_BAR_WIDTH = ENTITY_SQ_SIZE;
 
 public:
     explicit BaseEntity(
@@ -31,7 +31,6 @@ public:
 
     void drawHealthBar(const uint16_t currentHealth, const uint16_t maxHealth) const {
         const uint16_t currentWidth = currentHealth * HEALTH_BAR_WIDTH / maxHealth;
-
         const uint16_t lostWidth = HEALTH_BAR_WIDTH - currentWidth;
 
         const uint16_t xStart = posX_ - cameraPosX_;

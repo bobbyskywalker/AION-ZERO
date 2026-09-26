@@ -11,6 +11,15 @@ Game_ASH::Game_ASH(display::LcdDisplay& display) : currentState_(Game_ASH_State:
         INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE, Player::START_HEALTH,
         *this->gameMap_
     );
+    spawnEnemies();
+}
+
+void Game_ASH::spawnEnemies() {
+    const auto enemyCoords = this->gameMap_->provideEnemyCoordinates();
+    enemies_.reserve(enemyCoords.size());
+    for (auto [x, y]: enemyCoords) {
+        enemies_.emplace_back(x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, 100, *this->gameMap_);
+    }
 }
 
 ModuleSwitchRequest Game_ASH::runGame() {
@@ -44,9 +53,11 @@ void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
     updatePlayer();
+    updateEnemies(this->player_->getPosX());
     updateMap();
     drawMap();
     drawPlayer();
+    drawEnemies();
     this->display_.update();
 }
 
@@ -66,10 +77,23 @@ void Game_ASH::drawPlayer() const {
     this->player_->draw();
 }
 
+void Game_ASH::drawEnemies() {
+    for (auto & enemy : enemies_) {
+        enemy.draw();
+    }
+}
+
 void Game_ASH::updatePlayer() const {
     drainInputQueue();
     this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
     this->player_->updateJump();
+}
+
+void Game_ASH::updateEnemies(const uint16_t playerPosX) {
+    for (auto & enemy : enemies_) {
+        enemy.setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
+        enemy.followPlayer(playerPosX);
+    }
 }
 
 void Game_ASH::updateMap() const {

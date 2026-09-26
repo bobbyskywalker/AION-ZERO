@@ -9,6 +9,7 @@
 #include "maps/lvl_1.hpp"
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
+#include "entity/enemy/enemy.hpp"
 #include "entity/player/player.hpp"
 
 static uint64_t constexpr FPS =  33'000;
@@ -43,6 +44,7 @@ private:
     std::unique_ptr<BaseMap> gameMap_;
 
     std::unique_ptr<Player> player_;
+    std::vector<Enemy> enemies_{};
 
     void processCurrentState();
     void processGameplayState();
@@ -52,14 +54,17 @@ private:
     void drainInputQueue() const;
     void updatePlayer() const;
 
+    void drawMap();
+    void drawPlayer() const;
+    void drawEnemies();
+
     void updateMap() const;
+
+    void spawnEnemies();
+    void updateEnemies(uint16_t playerPosX);
 
 public:
     explicit Game_ASH(display::LcdDisplay& display);
-
-    void drawMap();
-
-    void drawPlayer() const;
 
     ModuleSwitchRequest runGame();
 };
