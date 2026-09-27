@@ -15,6 +15,7 @@ private:
 
     uint8_t currentAttackFrame{};
     uint8_t attackFPS = 8;
+    uint8_t attackLatch_{0};
 
     PlayerState currentState_;
 
@@ -28,18 +29,20 @@ private:
 public:
     explicit Player(uint16_t initialX, uint16_t initialY, uint16_t initialHealth, BaseMap & map);
 
-    PlayerState getCurrentState();
+    [[nodiscard]] bool canGiveDamageInFrame() const;
 
     void draw() override;
 
     void moveHorizontally(bool left, uint16_t mapWidth) ;
     void startJump();
     void updateJump();
+    void updateAttack();
     void attack();
 
     void animationEndedForStateEvent(PlayerState state);
 
     static constexpr uint16_t START_HEALTH = 100;
+    static constexpr uint16_t PLAYER_DAMAGE = 10;
 };
 
 #endif //AION_ZERO_FMW_PLAYER_HPP

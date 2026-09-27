@@ -68,6 +68,16 @@ void Player::attack() {
     }
 }
 
+void Player::updateAttack() {
+    if (currentState_ == PlayerState::ATTACKING) {
+        if (attackLatch_ == PlayerAnimator::ATTACK_FRAMES_LEN) {
+            attackLatch_ = 0;
+        } else {
+            attackLatch_++;
+        }
+    }
+}
+
 void Player::switchState(const PlayerState state) {
     this->currentState_ = state;
     this->animator_.resetFrameAndTimer();
@@ -77,4 +87,8 @@ void Player::animationEndedForStateEvent(const PlayerState state) {
     if (state == PlayerState::ATTACKING) {
         this->switchState(PlayerState::IDLE);
     }
+}
+
+bool Player::canGiveDamageInFrame() const {
+    return currentState_ == PlayerState::ATTACKING && attackLatch_ == 0;
 }

@@ -2,9 +2,11 @@
 
 #include "Module_ASH.hpp"
 #include "../../../engine/input.hpp"
+#include <algorithm>
 
-Game_ASH::Game_ASH(display::LcdDisplay& display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
-    this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent>>();
+Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
+    this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
+    this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
     this->gameMap_ = std::make_unique<MapLVL1>();
     this->player_ = std::make_unique<Player>(
         INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE,
@@ -18,7 +20,9 @@ void Game_ASH::spawnEnemies() {
     const auto enemyCoords = this->gameMap_->provideEnemyCoordinates();
     enemies_.reserve(enemyCoords.size());
     for (auto [x, y]: enemyCoords) {
-        enemies_.emplace_back(x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, 100, *this->gameMap_);
+        enemies_.emplace_back(
+            std::make_unique<Enemy>(x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, 100, *this->gameMap_)
+        );
     }
 }
 
@@ -52,8 +56,10 @@ void Game_ASH::processCurrentState() {
 void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
+    CollisionScanner::scanForEntityCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
     updatePlayer();
     updateEnemies(this->player_->getPosX());
+    drainCollisionQueue();
     updateMap();
     drawMap();
     drawPlayer();
@@ -77,9 +83,9 @@ void Game_ASH::drawPlayer() const {
     this->player_->draw();
 }
 
-void Game_ASH::drawEnemies() {
-    for (auto & enemy : enemies_) {
-        enemy.draw();
+void Game_ASH::drawEnemies() const {
+    for (const auto &enemy: enemies_) {
+        enemy->draw();
     }
 }
 
@@ -87,17 +93,36 @@ void Game_ASH::updatePlayer() const {
     drainInputQueue();
     this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
     this->player_->updateJump();
+    this->player_->updateAttack();
 }
 
 void Game_ASH::updateEnemies(const uint16_t playerPosX) {
-    for (auto & enemy : enemies_) {
-        enemy.setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
-        enemy.followPlayer(playerPosX);
+    for (auto const &enemy: enemies_) {
+        enemies_.erase(
+            std::remove_if(
+                enemies_.begin(),
+                enemies_.end(),
+                [](const std::unique_ptr<Enemy> &e) {return e->getHealth() == 0;}
+            ),enemies_.end()
+        );
+        enemy->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
+        enemy->followPlayer(playerPosX);
     }
 }
 
 void Game_ASH::updateMap() const {
     gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE);
+}
+
+void Game_ASH::drainCollisionQueue() const {
+    while (!this->collisionEventQueue_->empty()) {
+        auto event = this->collisionEventQueue_->front();
+        if (this->player_->canGiveDamageInFrame()) {
+            event.hitWith.takeDamage(Player::PLAYER_DAMAGE);
+        }
+        // todo: state based damage for enemies
+        this->collisionEventQueue_->pop();
+    }
 }
 
 void Game_ASH::drainInputQueue() const {

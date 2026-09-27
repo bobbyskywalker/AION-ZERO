@@ -46,6 +46,14 @@ public:
         }
     }
 
+    void takeDamage(const uint16_t damageValue) {
+        if (damageValue >= health_) {
+            health_ = 0;
+        } else {
+            health_ -= damageValue;
+        }
+    }
+
     [[nodiscard]] uint16_t getPosX() const { return posX_; }
     [[nodiscard]] uint16_t getPosY() const { return posY_; }
     [[nodiscard]] uint16_t getCameraPosX() const { return cameraPosX_; }

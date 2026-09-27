@@ -9,6 +9,7 @@
 #include "maps/lvl_1.hpp"
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
+#include "collision_scanner.hpp"
 #include "entity/enemy/enemy.hpp"
 #include "entity/player/player.hpp"
 
@@ -38,13 +39,15 @@ namespace ASH_MENU_BUTTONS {
 class Game_ASH {
 private:
     Game_ASH_State currentState_;
+
+    std::unique_ptr<std::queue<CollisionScanner::CollisionEvent>> collisionEventQueue_;
     std::unique_ptr<std::queue<InputEngine::ButtonEvent>> eventQueue_;
 
     display::LcdDisplay& display_;
     std::unique_ptr<BaseMap> gameMap_;
 
     std::unique_ptr<Player> player_;
-    std::vector<Enemy> enemies_{};
+    std::vector<std::unique_ptr<Enemy>> enemies_{};
 
     void processCurrentState();
     void processGameplayState();
@@ -52,11 +55,12 @@ private:
     void processMenuState();
 
     void drainInputQueue() const;
+    void drainCollisionQueue() const;
     void updatePlayer() const;
 
     void drawMap();
     void drawPlayer() const;
-    void drawEnemies();
+    void drawEnemies() const;
 
     void updateMap() const;
 

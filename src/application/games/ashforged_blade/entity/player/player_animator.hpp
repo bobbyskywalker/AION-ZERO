@@ -23,6 +23,7 @@ private:
     };
     static constexpr uint8_t IDLE_FPS = 15;
 
+    static constexpr uint8_t ATTACK_FPS = 2;
     static constexpr const unsigned char* ATTACK_FRAMES[9] = {
         PLAYER_ASH_ASSETS::ATTACK_1,
         PLAYER_ASH_ASSETS::ATTACK_2,
@@ -34,7 +35,6 @@ private:
         PLAYER_ASH_ASSETS::ATTACK_8,
         PLAYER_ASH_ASSETS::ATTACK_9
     };
-    static constexpr uint8_t ATTACK_FPS = 2;
 
     uint8_t frameTimer_ = 0;
     uint8_t currentFrame_ = 0;
@@ -49,6 +49,8 @@ public:
 
     void drawNextFrameForCurrentState(PlayerState state);
     void resetFrameAndTimer();
+
+    static constexpr uint8_t ATTACK_FRAMES_LEN = 9;
 };
 
 
