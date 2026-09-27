@@ -12,22 +12,24 @@ void Enemy::draw() {
     const auto screenX = posX_ - getCameraPosX();
 
     if (isInCameraView()) {
-        drawRectangle(
+        drawHealthBar(this->health_, MAX_HEALTH);
+
+        drawSprite(
+            ENEMY_ASH_ASSETS::ASHIGARU_ENEMY_1,
             screenX,
-            posY_ - ENTITY_SQ_SIZE,
-            screenX + ENTITY_SQ_SIZE,
-            posY_,
-            RED
+            this->posY_,
+            ENTITY_SQ_SIZE,
+            ENTITY_SQ_SIZE
         );
     }
 }
 
 void Enemy::followPlayer(const uint16_t playerPosX) {
     if (isInCameraView()) {
-        if (playerPosX < this->posX_) {
+        if (playerPosX < this->posX_ + TILE_SQ_SIZE) {
             posX_ -= STEP_SIZE;
         }
-        if (playerPosX > this->posX_) {
+        if (playerPosX > this->posX_ - TILE_SQ_SIZE) {
             posX_ += STEP_SIZE;
         }
     }
