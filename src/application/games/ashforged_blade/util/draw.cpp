@@ -1,6 +1,7 @@
 #include "draw.hpp"
 
 #include <cstdint>
+#include <string>
 
 constexpr uint16_t SPRITE_TRANSPARENT = 0x0000;
 
@@ -47,4 +48,15 @@ void drawRectangle(
     const uint16_t color
 ) {
     Paint_DrawRectangle(xStart, yStart, xEnd, yEnd, color, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+}
+
+void drawString(
+    const uint16_t x,
+    const uint16_t y,
+    const std::string & msg,
+    sFONT *font,
+    const uint16_t colorBg,
+    const uint16_t colorFg
+) {
+    Paint_DrawString_EN(x, y, msg.c_str(), font, colorBg, colorFg);
 }

@@ -49,6 +49,8 @@ private:
     std::unique_ptr<Player> player_;
     std::vector<std::unique_ptr<Enemy>> enemies_{};
 
+    uint8_t currentLevel_ = 1;
+
     void processCurrentState();
     void processGameplayState();
     void processPausedState();
@@ -57,15 +59,20 @@ private:
     void drainInputQueue() const;
     void drainCollisionQueue() const;
     void updatePlayer() const;
+    void updateHud();
 
     void drawMap();
     void drawPlayer() const;
     void drawEnemies() const;
+    void drawHud() const;
 
     void updateMap() const;
 
     void spawnEnemies();
     void updateEnemies(uint16_t playerPosX);
+
+    static constexpr uint16_t HUD_X = 10;
+    static constexpr uint16_t HUD_Y = 10;
 
 public:
     explicit Game_ASH(display::LcdDisplay& display);

@@ -59,6 +59,7 @@ void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
     CollisionScanner::scanForEntityCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
+    // updateHud();
     updatePlayer();
     updateEnemies(this->player_->getPosX());
     drainCollisionQueue();
@@ -66,6 +67,7 @@ void Game_ASH::processGameplayState() {
     drawMap();
     drawPlayer();
     drawEnemies();
+    drawHud();
     this->display_.update();
 }
 
@@ -89,6 +91,11 @@ void Game_ASH::drawEnemies() const {
     for (const auto &enemy: enemies_) {
         enemy->draw();
     }
+}
+
+void Game_ASH::drawHud() const {
+    const std::string msg = "LEVEL: " + std::to_string(currentLevel_);
+    drawString(HUD_X, HUD_Y, msg, &Font8, BROWN, WHITE);
 }
 
 void Game_ASH::updatePlayer() const {

@@ -2,6 +2,7 @@
 #define AION_ZERO_FMW_DRAW_HPP
 
 #include <cstdint>
+#include <string>
 #include "../../../../display/display.hpp"
 
 void drawTile(
@@ -33,6 +34,15 @@ void drawRectangle(
     uint16_t xEnd,
     uint16_t yEnd,
     uint16_t color
+);
+
+void drawString(
+    uint16_t x,
+    uint16_t y,
+    const std::string & msg,
+    sFONT *font,
+    uint16_t colorBg,
+    uint16_t colorFg
 );
 
 #endif //AION_ZERO_FMW_DRAW_HPP

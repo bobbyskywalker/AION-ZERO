@@ -11,7 +11,7 @@ Enemy::Enemy(
 
 void Enemy::draw() {
     if (isInCameraView()) {
-        drawHealthBar(this->health_, MAX_HEALTH);
+        drawHealthBar(this->health_, MAX_HEALTH, MAGENTA);
         this->animator_.drawNextFrameForCurrentState(this->currentState_);
     }
 }

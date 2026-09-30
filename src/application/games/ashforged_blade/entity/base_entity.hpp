@@ -29,7 +29,7 @@ public:
 
     virtual void draw() = 0;
 
-    void drawHealthBar(const uint16_t currentHealth, const uint16_t maxHealth) const {
+    void drawHealthBar(const uint16_t currentHealth, const uint16_t maxHealth, const uint16_t color) const {
         const uint16_t currentWidth = currentHealth * HEALTH_BAR_WIDTH / maxHealth;
         const uint16_t lostWidth = HEALTH_BAR_WIDTH - currentWidth;
 
@@ -38,7 +38,7 @@ public:
         const uint16_t yEnd = yStart + HEALTH_BAR_HEIGHT;
 
         if (currentWidth > 0) {
-            drawRectangle(xStart, yStart, xStart + currentWidth, yEnd, GREEN);
+            drawRectangle(xStart, yStart, xStart + currentWidth, yEnd, color);
         }
 
         if (lostWidth > 0) {

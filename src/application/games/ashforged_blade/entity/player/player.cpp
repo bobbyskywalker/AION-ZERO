@@ -7,7 +7,7 @@ Player::Player(const uint16_t initialX, const uint16_t initialY, const uint16_t 
 {}
 
 void Player::draw() {
-    drawHealthBar(this->health_, START_HEALTH);
+    drawHealthBar(this->health_, START_HEALTH, GREEN);
     animator_.drawNextFrameForCurrentState(currentState_);
 }
 
