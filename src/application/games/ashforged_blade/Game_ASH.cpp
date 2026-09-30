@@ -122,6 +122,10 @@ void Game_ASH::drainCollisionQueue() const {
         if (this->player_->canGiveDamageInFrame()) {
             event.hitWith.takeDamage(Player::PLAYER_DAMAGE);
         }
+        if (event.hitWith.isDamagePossible() && !event.hitWith.isGivenDamageInFrame()) {
+            event.hitWith.setGivenDamageInFrame(true);
+            this->player_->takeDamage(Enemy::ENEMY_DAMAGE);
+        }
         event.hitWith.setCurrentState(EnemyState::ATTACKING);
         this->collisionEventQueue_->pop();
     }

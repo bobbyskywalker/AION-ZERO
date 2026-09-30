@@ -13,6 +13,8 @@ private:
 
     EnemyAnimator animator_;
     EnemyState currentState_;
+    bool damagePossible_ = false;
+    bool givenDamageInFrame_ = false;
 
     [[nodiscard]] bool isInCameraView() const;
     static constexpr uint8_t STEP_SIZE = TILE_SQ_SIZE / 8;
@@ -34,6 +36,13 @@ public:
     void animationEndedForCurrentStateEvent(EnemyState state);
 
     void setCurrentState(const EnemyState state) {this->currentState_ = state;}
+    [[nodiscard]] bool isDamagePossible() const {return this->damagePossible_;}
+    void setDamagePossible(const bool canGiveDamage) {this->damagePossible_ = canGiveDamage;}
+    [[nodiscard]] bool isGivenDamageInFrame() const {return this->givenDamageInFrame_;}
+    void setGivenDamageInFrame(const bool canGiveDamage) {this->givenDamageInFrame_ = canGiveDamage;}
+
+    static constexpr uint16_t ENEMY_DAMAGE = 10;
+
 };
 
 

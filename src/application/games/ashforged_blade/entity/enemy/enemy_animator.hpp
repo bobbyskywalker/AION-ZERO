@@ -21,6 +21,10 @@ private:
         ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_4,
         ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_5
     };
+
+    // shitty mechanic but could not think of anything better
+    // enemy takes damage on 4 animation sprite, gives the player some time for escape :)
+    static constexpr uint8_t DAMAGE_WINDOW_START_IDX = 3;
     static constexpr uint8_t ATTACK_FPS = 6; //tbd
 
     Enemy & enemy_;

@@ -34,7 +34,9 @@ void Enemy::followPlayer(const uint16_t playerPosX) {
 }
 
 void Enemy::switchState(const EnemyState state) {
+    this->damagePossible_ = false;
     this->currentState_ = state;
+    this->givenDamageInFrame_ = false;
     this->animator_.resetFrameAndTimer();
 }
 

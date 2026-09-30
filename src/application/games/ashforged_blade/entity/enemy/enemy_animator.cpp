@@ -11,6 +11,9 @@ void EnemyAnimator::drawNextFrameForCurrentState(const EnemyState state) {
         drawSprite(FOLLOWING_FRAMES[currentFrame_], screenX, enemy_.getPosY(), ENTITY_SQ_SIZE, ENTITY_SQ_SIZE);
     } else if (state == EnemyState::ATTACKING) {
         this->updateFrameAndTimer(ATTACK_FRAMES, ATTACK_FPS);
+        if (currentFrame_ == DAMAGE_WINDOW_START_IDX) {
+            this->enemy_.setDamagePossible(true);
+        }
         drawSprite(
             ATTACK_FRAMES[currentFrame_], screenX, enemy_.getPosY(), ENTITY_SQ_SIZE, ENTITY_SQ_SIZE
         );
