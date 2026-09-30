@@ -8,21 +8,23 @@
 
 #include <memory>
 
+#include "entity/player/player.hpp"
+
 class CollisionScanner {
 public:
 
     struct CollisionEvent {
-        BaseEntity & target;
-        BaseEntity & hitWith;
+        Player & target;
+        Enemy & hitWith;
 
-        CollisionEvent(BaseEntity & target, BaseEntity & against) : target(target), hitWith(against) {}
+        CollisionEvent(Player & target, Enemy & against) : target(target), hitWith(against) {}
     };
 
     static void scanForEntityCollisions(
         std::queue<CollisionEvent> & collisionEventQueue,
-        BaseEntity & target,
+        Player & target,
         const std::vector<std::unique_ptr<Enemy>>& checkingAgainst
-    ); // todo: make this generic for base entity
+    );
 
 private:
 

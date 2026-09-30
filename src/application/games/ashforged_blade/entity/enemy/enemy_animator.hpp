@@ -1,24 +1,35 @@
 #ifndef AION_ZERO_FMW_ENEMY_ANIMATOR_HPP
 #define AION_ZERO_FMW_ENEMY_ANIMATOR_HPP
 
+#include "enemy_assets.hpp"
+#include "../entity_animator.hpp"
+
+class Enemy;
+enum class EnemyState;
+
 class EnemyAnimator : public EntityAnimator {
 private:
-    static constexpr unsigned char* FOLLOWING_FRAMES[5] = {
 
+    static constexpr const unsigned char *FOLLOWING_FRAMES[1] {
+        ENEMY_ASH_ASSETS::ASHIGARU_IDLE_1,
     };
-    static constexpr uint8_t FOLLOWING_FPS = 3; // tbd
-
 
     static constexpr const unsigned char *ATTACK_FRAMES[5] = {
-
+        ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_1,
+        ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_2,
+        ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_3,
+        ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_4,
+        ENEMY_ASH_ASSETS::ASHIGARU_ATTACK_5
     };
-    static constexpr ATTACK_FPS = 3; //tbd
+    static constexpr uint8_t ATTACK_FPS = 6; //tbd
 
+    Enemy & enemy_;
 
-    uint8_t frameTimer_ = 0;
-    uint8_t currentFrame = 0;
+public:
+    explicit EnemyAnimator(Enemy & e);
 
-    Enemy & enemy;
+    void drawNextFrameForCurrentState(EnemyState state);
+
 };
 
 #endif //AION_ZERO_FMW_ENEMY_ANIMATOR_HPP

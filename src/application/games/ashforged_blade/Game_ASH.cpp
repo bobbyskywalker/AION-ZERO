@@ -4,6 +4,8 @@
 #include "../../../engine/input.hpp"
 #include <algorithm>
 
+#include "entity/enemy/enemy_state.hpp"
+
 Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
     this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
@@ -120,7 +122,7 @@ void Game_ASH::drainCollisionQueue() const {
         if (this->player_->canGiveDamageInFrame()) {
             event.hitWith.takeDamage(Player::PLAYER_DAMAGE);
         }
-        // todo: state based damage for enemies
+        event.hitWith.setCurrentState(EnemyState::ATTACKING);
         this->collisionEventQueue_->pop();
     }
 }

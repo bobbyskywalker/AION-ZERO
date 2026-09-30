@@ -3,15 +3,23 @@
 
 #include <cstdint>
 
+#include "enemy_animator.hpp"
+#include "enemy_state.hpp"
 #include "../base_entity.hpp"
 #include "enemy_assets.hpp"
 
 class Enemy : public BaseEntity {
 private:
+
+    EnemyAnimator animator_;
+    EnemyState currentState_;
+
     [[nodiscard]] bool isInCameraView() const;
     static constexpr uint8_t STEP_SIZE = TILE_SQ_SIZE / 8;
 
     static constexpr uint16_t MAX_HEALTH = 100;
+
+    void switchState(EnemyState state);
 
 public:
     explicit Enemy(
@@ -23,6 +31,9 @@ public:
 
     void draw() override;
     void followPlayer(uint16_t playerPosX);
+    void animationEndedForCurrentStateEvent(EnemyState state);
+
+    void setCurrentState(const EnemyState state) {this->currentState_ = state;}
 };
 
 

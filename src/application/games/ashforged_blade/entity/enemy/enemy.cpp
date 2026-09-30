@@ -5,22 +5,14 @@ Enemy::Enemy(
     const uint16_t initialY,
     const uint16_t initialHealth,
     BaseMap &map
-) : BaseEntity(initialX, initialY, initialHealth, map) {
-}
+) : BaseEntity(initialX, initialY, initialHealth, map),
+    animator_(EnemyAnimator(*this)),
+    currentState_(EnemyState::FOLLOWING) {}
 
 void Enemy::draw() {
-    const auto screenX = posX_ - getCameraPosX();
-
     if (isInCameraView()) {
         drawHealthBar(this->health_, MAX_HEALTH);
-
-        drawSprite(
-            ENEMY_ASH_ASSETS::ASHIGARU_ENEMY_1,
-            screenX,
-            this->posY_,
-            ENTITY_SQ_SIZE,
-            ENTITY_SQ_SIZE
-        );
+        this->animator_.drawNextFrameForCurrentState(this->currentState_);
     }
 }
 
@@ -39,4 +31,15 @@ void Enemy::followPlayer(const uint16_t playerPosX) {
     const auto enemyTileX = getTilePosX();
     const auto cameraTileX = getCameraPosX() / TILE_SQ_SIZE;
     return enemyTileX >= cameraTileX && enemyTileX < cameraTileX + BaseMap::CAMERA_SIZE;
+}
+
+void Enemy::switchState(const EnemyState state) {
+    this->currentState_ = state;
+    this->animator_.resetFrameAndTimer();
+}
+
+void Enemy::animationEndedForCurrentStateEvent(const EnemyState state) {
+    if (state == EnemyState::ATTACKING) {
+        this->switchState(EnemyState::FOLLOWING);
+    }
 }

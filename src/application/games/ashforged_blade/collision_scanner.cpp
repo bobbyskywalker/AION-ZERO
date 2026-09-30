@@ -2,7 +2,7 @@
 
 void CollisionScanner::scanForEntityCollisions(
     std::queue<CollisionEvent> & collisionEventQueue,
-    BaseEntity & target,
+    Player & target,
     const std::vector<std::unique_ptr<Enemy>>& checkingAgainst)
 {
     for (auto & e : checkingAgainst) {
