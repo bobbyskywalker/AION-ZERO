@@ -5,13 +5,14 @@
 
 #include "player_assets.hpp"
 #include "player_state.hpp"
+#include "../entity_animator.hpp"
 #include "../../util/draw.hpp"
 #include "../../maps/base_map.hpp"
 
 class Player;
 enum class PlayerState;
 
-class PlayerAnimator {
+class PlayerAnimator : public EntityAnimator {
 private:
     static constexpr const unsigned char* IDLE_FRAMES[6] = {
         PLAYER_ASH_ASSETS::IDLE_1,
@@ -36,19 +37,12 @@ private:
         PLAYER_ASH_ASSETS::ATTACK_9
     };
 
-    uint8_t frameTimer_ = 0;
-    uint8_t currentFrame_ = 0;
-
     Player & player_;
-
-    template<size_t N>
-    void updateFrameAndTimer(const unsigned char* const (&frames)[N], uint8_t fps);
 
 public:
     explicit PlayerAnimator(Player & p);
 
     void drawNextFrameForCurrentState(PlayerState state);
-    void resetFrameAndTimer();
 
     static constexpr uint8_t ATTACK_FRAMES_LEN = 9;
 };
