@@ -92,3 +92,7 @@ void Player::animationEndedForStateEvent(const PlayerState state) {
 bool Player::canGiveDamageInFrame() const {
     return currentState_ == PlayerState::ATTACKING && attackLatch_ == 0;
 }
+
+void Player::updateScore(const uint16_t val) {
+    this->score_ += val;
+}

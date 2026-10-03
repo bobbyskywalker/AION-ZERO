@@ -45,4 +45,6 @@ void drawString(
     uint16_t colorFg
 );
 
+[[nodiscard]] UWORD textWidth(std::string const & text, sFONT font);
+
 #endif //AION_ZERO_FMW_DRAW_HPP

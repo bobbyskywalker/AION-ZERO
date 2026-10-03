@@ -42,6 +42,7 @@ public:
     void setGivenDamageInFrame(const bool canGiveDamage) {this->givenDamageInFrame_ = canGiveDamage;}
 
     static constexpr uint16_t ENEMY_DAMAGE = 10;
+    static constexpr uint16_t KILL_SCORE_REWARD = 50;
     static constexpr uint16_t ENEMY_SEPARATION = ENTITY_SQ_SIZE;
 
 };

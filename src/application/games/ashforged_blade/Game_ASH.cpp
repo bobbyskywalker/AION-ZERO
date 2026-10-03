@@ -95,8 +95,10 @@ void Game_ASH::drawEnemies() const {
 }
 
 void Game_ASH::drawHud() const {
-    const std::string msg = "LEVEL: " + std::to_string(currentLevel_);
-    drawString(HUD_X, HUD_Y, msg, &Font8, BROWN, WHITE);
+    const std::string msgLvl = "LEVEL: " + std::to_string(currentLevel_);
+    drawString(HUD_X, HUD_Y, msgLvl, &Font8, BLACK, WHITE);
+    const std::string msgScore = "SCORE: " + std::to_string(this->player_->getScore());
+    drawString(display::WIDTH - HUD_X - textWidth(msgScore, Font8), HUD_Y, msgScore, &Font8, BLACK, WHITE);
 }
 
 void Game_ASH::updatePlayer() const {
@@ -108,13 +110,20 @@ void Game_ASH::updatePlayer() const {
 
 void Game_ASH::updateEnemies(const uint16_t playerPosX) {
     for (auto const &enemy: enemies_) {
-        enemies_.erase(
+        auto removeEnemyAndUpdateScore = [](std::vector<std::unique_ptr<Enemy>> & enemies, Player & p) {
+            const uint16_t size = enemies.size();
+
+            enemies.erase(
             std::remove_if(
-                enemies_.begin(),
-                enemies_.end(),
+                enemies.begin(),
+                enemies.end(),
                 [](const std::unique_ptr<Enemy> &e) {return e->getHealth() == 0;}
-            ),enemies_.end()
-        );
+            ),enemies.end());
+
+            if (size > enemies.size())
+                p.updateScore(Enemy::KILL_SCORE_REWARD);
+        };
+        removeEnemyAndUpdateScore(this->enemies_, *this->player_);
         enemy->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
         enemy->followPlayer(playerPosX);
     }

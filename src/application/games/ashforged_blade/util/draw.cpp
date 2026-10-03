@@ -60,3 +60,7 @@ void drawString(
 ) {
     Paint_DrawString_EN(x, y, msg.c_str(), font, colorBg, colorFg);
 }
+
+[[nodiscard]] UWORD textWidth(const std::string &text, const sFONT font) {
+    return text.length() * font.Width;
+}
