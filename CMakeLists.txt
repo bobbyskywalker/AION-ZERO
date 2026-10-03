@@ -118,7 +118,6 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/entity/enemy/enemy.hpp
         src/application/games/ashforged_blade/entity/base_entity.hpp
         src/application/games/ashforged_blade/entity/enemy/enemy_assets.hpp
-        src/application/games/ashforged_blade/collision_scanner.cpp
         src/application/games/ashforged_blade/collision_scanner.hpp
         src/application/games/ashforged_blade/entity/enemy/enemy_animator.hpp
         src/application/games/ashforged_blade/entity/enemy/enemy_animator.cpp

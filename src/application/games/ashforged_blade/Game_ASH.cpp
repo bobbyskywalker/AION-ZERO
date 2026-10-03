@@ -3,6 +3,7 @@
 #include "Module_ASH.hpp"
 #include "../../../engine/input.hpp"
 #include <algorithm>
+#include <variant>
 
 #include "entity/enemy/enemy_state.hpp"
 
@@ -58,7 +59,7 @@ void Game_ASH::processCurrentState() {
 void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
-    CollisionScanner::scanForEntityCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
+    CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
     // updateHud();
     updatePlayer();
     updateEnemies(this->player_->getPosX());
@@ -125,15 +126,30 @@ void Game_ASH::updateMap() const {
 
 void Game_ASH::drainCollisionQueue() const {
     while (!this->collisionEventQueue_->empty()) {
-        auto event = this->collisionEventQueue_->front();
-        if (this->player_->canGiveDamageInFrame()) {
-            event.hitWith.takeDamage(Player::PLAYER_DAMAGE);
+        const auto event = this->collisionEventQueue_->front();
+
+        if (std::holds_alternative<CollisionScanner::PlayerCollisionEvent>(event)) {
+            const auto& pce = std::get<CollisionScanner::PlayerCollisionEvent>(event);
+
+            if (this->player_->canGiveDamageInFrame()) {
+                pce.hitWith.takeDamage(Player::PLAYER_DAMAGE);
+            }
+            if (pce.hitWith.isDamagePossible() && !pce.hitWith.isGivenDamageInFrame()) {
+                pce.hitWith.setGivenDamageInFrame(true);
+                this->player_->takeDamage(Enemy::ENEMY_DAMAGE);
+            }
+            pce.hitWith.setCurrentState(EnemyState::ATTACKING);
+        } else if (std::holds_alternative<CollisionScanner::EnemyCollisionEvent>(event)) {
+            const auto& ece = std::get<CollisionScanner::EnemyCollisionEvent>(event);
+
+            const uint16_t e1X = ece.e1.getPosX();
+            const uint16_t e2X = ece.e2.getPosX();
+            if (e1X < e2X) {
+                ece.e2.setPosX(e1X + Enemy::ENEMY_SEPARATION);
+            } else if (e2X < e1X) {
+                ece.e1.setPosX(e2X + Enemy::ENEMY_SEPARATION);
+            }
         }
-        if (event.hitWith.isDamagePossible() && !event.hitWith.isGivenDamageInFrame()) {
-            event.hitWith.setGivenDamageInFrame(true);
-            this->player_->takeDamage(Enemy::ENEMY_DAMAGE);
-        }
-        event.hitWith.setCurrentState(EnemyState::ATTACKING);
         this->collisionEventQueue_->pop();
     }
 }
