@@ -17,16 +17,28 @@ Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State:
         *this->gameMap_
     );
     spawnEnemies();
+    spawnCollectibles();
 }
 
 void Game_ASH::spawnEnemies() {
-    const auto enemyCoords = this->gameMap_->provideEnemyCoordinates();
+    const auto enemyCoords = BaseMap::provideTypeCoordinates(
+        this->gameMap_->getMap(), MapDescription::TILE_ID::ENEMY_POS_ID
+    );
     enemies_.reserve(enemyCoords.size());
     for (auto [x, y]: enemyCoords) {
         enemies_.emplace_back(
             std::make_unique<Enemy>(x * TILE_SQ_SIZE, y * TILE_SQ_SIZE, 100, *this->gameMap_)
         );
     }
+}
+
+void Game_ASH::spawnCollectibles() {
+    const auto healthCollectibleCoords = BaseMap::provideTypeCoordinates(
+        this->gameMap_->getMap(), MapDescription::TILE_ID::HEALTH_COLLECTIBLE_ID
+    );
+    // const auto scoreCollectibleCoords = BaseMap::provideTypeCoordinates(
+    //     this->gameMap_->getMap(), MapDescription::TILE_ID::
+    // );
 }
 
 ModuleSwitchRequest Game_ASH::runGame() {
@@ -60,7 +72,6 @@ void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
     CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
-    // updateHud();
     updatePlayer();
     updateEnemies(this->player_->getPosX());
     drainCollisionQueue();
@@ -81,7 +92,9 @@ void Game_ASH::processPausedState() {
 }
 
 void Game_ASH::drawMap() {
-    this->gameMap_->draw(this->display_);
+    this->gameMap_->draw(
+        this->display_, this->gameMap_->getBackgroundAsset(), this->gameMap_->getTileWalkableAsset()
+    );
 }
 
 void Game_ASH::drawPlayer() const {
@@ -130,7 +143,7 @@ void Game_ASH::updateEnemies(const uint16_t playerPosX) {
 }
 
 void Game_ASH::updateMap() const {
-    gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE);
+    gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE, this->gameMap_->getMap());
 }
 
 void Game_ASH::drainCollisionQueue() const {
@@ -170,10 +183,10 @@ void Game_ASH::drainInputQueue() const {
         ) {
             switch (button) {
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
-                    this->player_->moveHorizontally(true, this->gameMap_->getMapWidth());
+                    this->player_->moveHorizontally(true, BaseMap::getMapWidth());
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
-                    this->player_->moveHorizontally(false, this->gameMap_->getMapWidth());
+                    this->player_->moveHorizontally(false, BaseMap::getMapWidth());
                     break;
                 case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
                     this->player_->startJump();

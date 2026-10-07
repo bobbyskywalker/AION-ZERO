@@ -10,6 +10,7 @@
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
 #include "collision_scanner.hpp"
+#include "collectible/base_collectible.hpp"
 #include "entity/enemy/enemy.hpp"
 #include "entity/player/player.hpp"
 
@@ -48,6 +49,7 @@ private:
 
     std::unique_ptr<Player> player_;
     std::vector<std::unique_ptr<Enemy>> enemies_{};
+    std::vector<std::unique_ptr<BaseCollectible>> collectibles_{};
 
     uint8_t currentLevel_ = 1;
 
@@ -67,6 +69,8 @@ private:
     void drawHud() const;
 
     void updateMap() const;
+
+    void spawnCollectibles();
 
     void spawnEnemies();
     void updateEnemies(uint16_t playerPosX);

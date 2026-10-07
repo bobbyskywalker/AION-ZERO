@@ -103,7 +103,6 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/Module_ASH.cpp
         src/application/games/ashforged_blade/maps/lvl_1.hpp
         src/application/games/ashforged_blade/Game_ASH.cpp
-        src/application/games/ashforged_blade/maps/lvl_1.cpp
         src/application/games/ashforged_blade/util/draw.hpp
         src/application/games/ashforged_blade/util/draw.cpp
         src/application/games/ashforged_blade/maps/base_map.hpp
@@ -124,6 +123,11 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/entity/enemy/enemy_state.hpp
         src/application/games/ashforged_blade/entity/entity_animator.hpp
         src/application/games/ashforged_blade/entity/entity_animator.cpp
+        src/application/games/ashforged_blade/collectible/base_collectible.hpp
+        src/application/games/ashforged_blade/collectible/health_collectible.cpp
+        src/application/games/ashforged_blade/collectible/health_collectible.hpp
+        src/application/games/ashforged_blade/collectible/collectible_assets.hpp
+        src/application/games/ashforged_blade/maps/base_map.cpp
 )
 
 target_link_libraries(aion-zero-fmw

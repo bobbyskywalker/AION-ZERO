@@ -30,7 +30,7 @@ void Enemy::followPlayer(const uint16_t playerPosX) {
 [[nodiscard]] bool Enemy::isInCameraView() const {
     const auto enemyTileX = getTilePosX();
     const auto cameraTileX = getCameraPosX() / TILE_SQ_SIZE;
-    return enemyTileX >= cameraTileX && enemyTileX < cameraTileX + BaseMap::CAMERA_SIZE;
+    return enemyTileX >= cameraTileX && enemyTileX < cameraTileX + CAMERA_SIZE;
 }
 
 void Enemy::switchState(const EnemyState state) {

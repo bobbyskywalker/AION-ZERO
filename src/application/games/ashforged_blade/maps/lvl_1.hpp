@@ -1,5 +1,5 @@
-#ifndef AION_ZERO_FMW_TEMPMAP_HPP
-#define AION_ZERO_FMW_TEMPMAP_HPP
+#ifndef AION_ZERO_FMW_LVL1_HPP
+#define AION_ZERO_FMW_LVL1_HPP
 
 #include <array>
 #include <cstdint>
@@ -13,33 +13,15 @@ class MapLVL1 : public BaseMap {
 public:
     MapLVL1() = default;
 
-    void draw(display::LcdDisplay &display) override;
+    [[nodiscard]] const unsigned char* getTileBottomAsset() const override {return TILE_BOTTOM;}
+    [[nodiscard]] const unsigned char* getTileWalkableAsset() const override {return TILE_WALKABLE;}
+    [[nodiscard]] const unsigned char* getTileBackgroundAsset() const override {return TILE_BACKGROUND;}
+    [[nodiscard]] const unsigned char* getBackgroundAsset() const override {return BACKGROUND;}
 
-    void drawBg(display::LcdDisplay &display) override;
-
-    void updateCamera(uint16_t playerPosX) override;
-
-    [[nodiscard]] uint8_t getScrollX() const { return this->scrollX_; }
-    void setScrollX(const uint8_t scrollX) { this->scrollX_ = scrollX; }
-
-    [[nodiscard]] uint16_t getCameraX() const override { return this->cameraX_; }
-    void setCameraX(const uint16_t cameraX) { this->cameraX_ = cameraX; }
-
-    [[nodiscard]] uint16_t getMapWidth() const override { return MAP_WIDTH; }
-    [[nodiscard]] uint16_t getMapHeight() const override { return MAP_HEIGHT; }
-
-    [[nodiscard]] bool isWalkableTileOnPos(uint16_t posX, uint16_t posY) const override;
-    [[nodiscard]] bool isGroundOnPos(uint16_t posY) const override;
-
-    [[nodiscard]] std::vector<std::pair<uint8_t, uint8_t> > provideEnemyCoordinates() override;
+    [[nodiscard]] const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT>& getMap() const override { return this->MAP_LVL1; }
 
 private:
-    uint8_t scrollX_ = 0;
-    uint16_t cameraX_ = 0;
-
-    std::array<std::array<uint8_t, CAMERA_SIZE>, CAMERA_SIZE> camera_;
-
-    static constexpr std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> MAP_LVL1 = {
+    std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> MAP_LVL1 = {
         {
             // y = 0
             {
@@ -104,7 +86,7 @@ private:
             // y = 6
             {
                 {
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -204,4 +186,4 @@ private:
     };
 };
 
-#endif //AION_ZERO_FMW_TEMPMAP_HPP
+#endif //AION_ZERO_FMW_LVL1_HPP

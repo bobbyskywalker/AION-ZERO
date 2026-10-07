@@ -25,7 +25,7 @@ void Player::moveHorizontally(const bool left, const uint16_t mapWidth) {
             this->posX_ = mapWidth * TILE_SQ_SIZE - STEP_SIZE;
         }
     }
-    if (!this->map_.isWalkableTileOnPos(this->getTilePosX(), this->getTilePosY())
+    if (!this->map_.isWalkableTileOnPos(this->getTilePosX(), this->getTilePosY(), this->map_.getMap())
             && this->currentState_ != PlayerState::FALLING) {
         switchState(PlayerState::FALLING);
     }
@@ -52,7 +52,7 @@ void Player::updateJump() {
         const uint16_t tileX = this->getTilePosX();
         const uint16_t tileY = this->getTilePosY();
 
-        if (this->map_.isWalkableTileOnPos(tileX, tileY + PLAYER_TO_WALKABLE_TILE_OFFSET)) {
+        if (this->map_.isWalkableTileOnPos(tileX, tileY + PLAYER_TO_WALKABLE_TILE_OFFSET, this->map_.getMap())) {
             posY_ = tileY * TILE_SQ_SIZE;
             this->switchState(PlayerState::IDLE);
         } else if (this->map_.isGroundOnPos(tileY)) {
