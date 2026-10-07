@@ -128,6 +128,8 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/collectible/health_collectible.hpp
         src/application/games/ashforged_blade/collectible/collectible_assets.hpp
         src/application/games/ashforged_blade/maps/base_map.cpp
+        src/application/games/ashforged_blade/collectible/score_collectible.hpp
+        src/application/games/ashforged_blade/collectible/score_collectible.cpp
 )
 
 target_link_libraries(aion-zero-fmw

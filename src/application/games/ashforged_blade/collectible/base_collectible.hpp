@@ -13,7 +13,7 @@ public:
     explicit BaseCollectible(const uint16_t initialX, const uint16_t initialY) : posX_(initialX), posY_(initialY) {}
     virtual ~BaseCollectible() = default;
 
-    virtual void draw() = 0;
+    virtual void draw() const = 0;
 
     [[nodiscard]] uint16_t getPosX() const { return posX_; }
     [[nodiscard]] uint16_t getPosY() const { return posY_; }

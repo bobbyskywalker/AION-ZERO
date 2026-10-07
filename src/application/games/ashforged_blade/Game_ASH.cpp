@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <variant>
 
+#include "collectible/health_collectible.hpp"
 #include "entity/enemy/enemy_state.hpp"
 
 Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
@@ -36,9 +37,13 @@ void Game_ASH::spawnCollectibles() {
     const auto healthCollectibleCoords = BaseMap::provideTypeCoordinates(
         this->gameMap_->getMap(), MapDescription::TILE_ID::HEALTH_COLLECTIBLE_ID
     );
-    // const auto scoreCollectibleCoords = BaseMap::provideTypeCoordinates(
-    //     this->gameMap_->getMap(), MapDescription::TILE_ID::
-    // );
+    collectibles_.reserve(healthCollectibleCoords.size());
+
+    for (auto [x, y]: healthCollectibleCoords) {
+        collectibles_.emplace_back(
+            HealthCollectible{static_cast<uint16_t>(x * TILE_SQ_SIZE), static_cast<uint16_t>(y * TILE_SQ_SIZE)}
+        );
+    }
 }
 
 ModuleSwitchRequest Game_ASH::runGame() {
@@ -55,17 +60,17 @@ ModuleSwitchRequest Game_ASH::runGame() {
 }
 
 void Game_ASH::processCurrentState() {
-   switch (this->currentState_) {
-       case Game_ASH_State::GAMEPLAY:
-           processGameplayState();
-           break;
-       case Game_ASH_State::PAUSED:
-           processPausedState();
-           break;
-       case Game_ASH_State::MENU:
-           processMenuState();
-           break;
-   }
+    switch (this->currentState_) {
+        case Game_ASH_State::GAMEPLAY:
+            processGameplayState();
+            break;
+        case Game_ASH_State::PAUSED:
+            processPausedState();
+            break;
+        case Game_ASH_State::MENU:
+            processMenuState();
+            break;
+    }
 }
 
 void Game_ASH::processGameplayState() {
@@ -74,11 +79,13 @@ void Game_ASH::processGameplayState() {
     CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
     updatePlayer();
     updateEnemies(this->player_->getPosX());
+    updateCollectibles();
     drainCollisionQueue();
     updateMap();
     drawMap();
     drawPlayer();
     drawEnemies();
+    drawCollectibles();
     drawHud();
     this->display_.update();
 }
@@ -114,6 +121,14 @@ void Game_ASH::drawHud() const {
     drawString(display::WIDTH - HUD_X - textWidth(msgScore, Font8), HUD_Y, msgScore, &Font8, BLACK, WHITE);
 }
 
+void Game_ASH::drawCollectibles() const {
+    for (const auto &collectible: collectibles_) {
+        std::visit([](const auto &c) {
+            c.draw();
+        }, collectible);
+    }
+}
+
 void Game_ASH::updatePlayer() const {
     drainInputQueue();
     this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
@@ -121,24 +136,33 @@ void Game_ASH::updatePlayer() const {
     this->player_->updateAttack();
 }
 
+void Game_ASH::updateCollectibles() {
+    const auto cameraX = this->gameMap_->getCameraX();
+    for (auto &collectible: collectibles_) {
+        std::visit([cameraX](auto &c) {
+            c.setCameraPosX(cameraX * TILE_SQ_SIZE);
+        }, collectible);
+    }
+}
+
 void Game_ASH::updateEnemies(const uint16_t playerPosX) {
     for (auto const &enemy: enemies_) {
-        auto removeEnemyAndUpdateScore = [](std::vector<std::unique_ptr<Enemy>> & enemies, Player & p) {
+        auto removeEnemyAndUpdateScore = [](std::vector<std::unique_ptr<Enemy> > &enemies, Player &p) {
             const uint16_t size = enemies.size();
 
             enemies.erase(
-            std::remove_if(
-                enemies.begin(),
-                enemies.end(),
-                [](const std::unique_ptr<Enemy> &e) {return e->getHealth() == 0;}
-            ),enemies.end());
+                std::remove_if(
+                    enemies.begin(),
+                    enemies.end(),
+                    [](const std::unique_ptr<Enemy> &e) { return e->getHealth() == 0; }
+                ), enemies.end());
 
             if (size > enemies.size())
                 p.updateScore(Enemy::KILL_SCORE_REWARD);
         };
-        removeEnemyAndUpdateScore(this->enemies_, *this->player_);
         enemy->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
         enemy->followPlayer(playerPosX);
+        removeEnemyAndUpdateScore(this->enemies_, *this->player_);
     }
 }
 
@@ -151,7 +175,7 @@ void Game_ASH::drainCollisionQueue() const {
         const auto event = this->collisionEventQueue_->front();
 
         if (std::holds_alternative<CollisionScanner::PlayerCollisionEvent>(event)) {
-            const auto& pce = std::get<CollisionScanner::PlayerCollisionEvent>(event);
+            const auto &pce = std::get<CollisionScanner::PlayerCollisionEvent>(event);
 
             if (this->player_->canGiveDamageInFrame()) {
                 pce.hitWith.takeDamage(Player::PLAYER_DAMAGE);
@@ -162,7 +186,7 @@ void Game_ASH::drainCollisionQueue() const {
             }
             pce.hitWith.setCurrentState(EnemyState::ATTACKING);
         } else if (std::holds_alternative<CollisionScanner::EnemyCollisionEvent>(event)) {
-            const auto& ece = std::get<CollisionScanner::EnemyCollisionEvent>(event);
+            const auto &ece = std::get<CollisionScanner::EnemyCollisionEvent>(event);
 
             const uint16_t e1X = ece.e1.getPosX();
             const uint16_t e2X = ece.e2.getPosX();
@@ -182,16 +206,16 @@ void Game_ASH::drainInputQueue() const {
             state == InputEngine::ButtonState::PRESSED
         ) {
             switch (button) {
-                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
+                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
                     this->player_->moveHorizontally(true, BaseMap::getMapWidth());
                     break;
-                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
+                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
                     this->player_->moveHorizontally(false, BaseMap::getMapWidth());
                     break;
-                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
+                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
                     this->player_->startJump();
                     break;
-                case InputEngine::BUTTONS.at( ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
+                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
                     this->player_->attack();
                     break;
                 default:

@@ -10,7 +10,8 @@
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
 #include "collision_scanner.hpp"
-#include "collectible/base_collectible.hpp"
+#include "collectible/health_collectible.hpp"
+#include "collectible/score_collectible.hpp"
 #include "entity/enemy/enemy.hpp"
 #include "entity/player/player.hpp"
 
@@ -36,7 +37,6 @@ namespace ASH_MENU_BUTTONS {
     constexpr uint8_t BUTTON_BACK = 3;
 }
 
-
 class Game_ASH {
 private:
     Game_ASH_State currentState_;
@@ -49,7 +49,7 @@ private:
 
     std::unique_ptr<Player> player_;
     std::vector<std::unique_ptr<Enemy>> enemies_{};
-    std::vector<std::unique_ptr<BaseCollectible>> collectibles_{};
+    std::vector<std::variant<HealthCollectible, ScoreCollectible>> collectibles_{};
 
     uint8_t currentLevel_ = 1;
 
@@ -67,10 +67,12 @@ private:
     void drawPlayer() const;
     void drawEnemies() const;
     void drawHud() const;
+    void drawCollectibles() const;
 
     void updateMap() const;
 
     void spawnCollectibles();
+    void updateCollectibles();
 
     void spawnEnemies();
     void updateEnemies(uint16_t playerPosX);

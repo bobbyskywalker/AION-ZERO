@@ -12,7 +12,7 @@ private:
 public:
     explicit HealthCollectible(uint16_t initialX, uint16_t initialY);
 
-    void draw() override;
+    void draw() const override;
 
     static constexpr uint16_t HEALTH_VALUE = 25;
 };
