@@ -7,6 +7,7 @@
 #include <queue>
 
 #include "maps/lvl_1.hpp"
+#include "maps/lvl_2.hpp"
 #include "../../module.hpp"
 #include "../../../engine/input.hpp"
 #include "collision_scanner.hpp"

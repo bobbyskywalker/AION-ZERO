@@ -58,9 +58,7 @@ public:
 
     static uint16_t getMapHeight() { return MAP_HEIGHT; }
 
-    [[nodiscard]] virtual const unsigned char* getTileBottomAsset() const = 0;
     [[nodiscard]] virtual const unsigned char* getTileWalkableAsset() const = 0;
-    [[nodiscard]] virtual const unsigned char* getTileBackgroundAsset() const = 0;
     [[nodiscard]] virtual const unsigned char* getBackgroundAsset() const = 0;
 
     void drawBg(display::LcdDisplay &display, const unsigned char *bg) const;

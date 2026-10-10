@@ -11,7 +11,7 @@
 Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
     this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
-    this->gameMap_ = std::make_unique<MapLVL1>();
+    this->gameMap_ = std::make_unique<MapLVL2>();
     this->player_ = std::make_unique<Player>(
         INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE,
         INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE, Player::START_HEALTH,

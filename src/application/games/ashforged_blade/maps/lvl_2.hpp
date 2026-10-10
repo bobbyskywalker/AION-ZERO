@@ -1,25 +1,19 @@
-#ifndef AION_ZERO_FMW_LVL1_HPP
-#define AION_ZERO_FMW_LVL1_HPP
+#ifndef AION_ZERO_FMW_LVL_2_HPP
+#define AION_ZERO_FMW_LVL_2_HPP
 
-#include <array>
-#include <cstdint>
+#include "lvl2_assets.hpp"
 
-#include "lvl1_assets.hpp"
-#include "../../../../display/display.hpp"
-#include "../util/draw.hpp"
-#include "base_map.hpp"
-
-class MapLVL1 : public BaseMap {
+class MapLVL2: public BaseMap {
 public:
-    MapLVL1() = default;
+    MapLVL2() = default;
 
-    [[nodiscard]] const unsigned char* getTileWalkableAsset() const override {return LVL1_TILE_WALKABLE;}
-    [[nodiscard]] const unsigned char* getBackgroundAsset() const override {return LVL1_BACKGROUND;}
+    [[nodiscard]] const unsigned char* getTileWalkableAsset() const override {return LVL2_TILE_WALKABLE;}
+    [[nodiscard]] const unsigned char* getBackgroundAsset() const override {return LVL2_BACKGROUND;}
 
-    [[nodiscard]] const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT>& getMap() const override { return this->MAP_LVL1; }
+    [[nodiscard]] const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT>& getMap() const override { return this->MAP_LVL2; }
 
 private:
-    std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> MAP_LVL1 = {
+        std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> MAP_LVL2 = {
         {
             // y = 0
             {
@@ -55,8 +49,8 @@ private:
             {
                 {
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 }
             },
@@ -75,9 +69,9 @@ private:
             {
                 {
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0
+                    0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0
                 }
             },
 
@@ -86,7 +80,7 @@ private:
                 {
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 }
             },
@@ -94,10 +88,10 @@ private:
             // y = 7
             {
                 {
-                    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                    0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0,
+                    0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0
                 }
             },
 
@@ -105,8 +99,8 @@ private:
             {
                 {
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 }
             },
@@ -114,10 +108,10 @@ private:
             // y = 9
             {
                 {
-                    0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0
+                    0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0,
+                    0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 }
             },
 
@@ -134,10 +128,10 @@ private:
             // y = 11 - standing surface
             {
                 {
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                    0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0
                 }
             },
 
@@ -184,4 +178,5 @@ private:
     };
 };
 
-#endif //AION_ZERO_FMW_LVL1_HPP
+
+#endif //AION_ZERO_FMW_LVL_2_HPP
