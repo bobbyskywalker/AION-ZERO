@@ -29,9 +29,10 @@ private:
     bool isPlayerOnWalkableTile();
 
 public:
-    explicit Player(uint16_t initialX, uint16_t initialY, uint16_t initialHealth, BaseMap & map);
+    explicit Player(uint16_t initialX, uint16_t initialY, uint16_t initialHealth, BaseMap * map);
 
     [[nodiscard]] bool canGiveDamageInFrame() const;
+    void setMap(BaseMap * map) {this->map_ = map;}
 
     void draw() override;
 

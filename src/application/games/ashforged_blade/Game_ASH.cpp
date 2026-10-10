@@ -11,11 +11,11 @@
 Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
     this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
-    this->gameMap_ = std::make_unique<MapLVL2>();
+    this->gameMap_ = std::make_unique<MapLVL1>();
     this->player_ = std::make_unique<Player>(
         INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE,
         INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE, Player::START_HEALTH,
-        *this->gameMap_
+        this->gameMap_.get()
     );
     spawnEnemies();
     spawnCollectibles();
@@ -105,6 +105,7 @@ void Game_ASH::processGameplayState() {
     updateEnemies(this->player_->getPosX());
     updateCollectibles();
     drainCollisionQueue();
+    removeDeadEnemies();
     updateMap();
     drawMap();
     drawPlayer();
@@ -112,6 +113,10 @@ void Game_ASH::processGameplayState() {
     drawCollectibles();
     drawHud();
     this->display_.update();
+
+    if (this->enemies_.empty()) {
+        this->nextLevel();
+    }
 }
 
 void Game_ASH::processMenuState() {
@@ -169,24 +174,12 @@ void Game_ASH::updateCollectibles() {
     }
 }
 
-void Game_ASH::updateEnemies(const uint16_t playerPosX) {
-    for (auto const &enemy: enemies_) {
-        auto removeEnemyAndUpdateScore = [](std::vector<std::unique_ptr<Enemy> > &enemies, Player &p) {
-            const uint16_t size = enemies.size();
-
-            enemies.erase(
-                std::remove_if(
-                    enemies.begin(),
-                    enemies.end(),
-                    [](const std::unique_ptr<Enemy> &e) { return e->getHealth() == 0; }
-                ), enemies.end());
-
-            if (size > enemies.size())
-                p.updateScore(Enemy::KILL_SCORE_REWARD);
-        };
-        enemy->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
+void Game_ASH::updateEnemies(const uint16_t playerPosX) const {
+    for (const auto &enemy: enemies_) {
+        enemy->setCameraPosX(
+            gameMap_->getCameraX() * TILE_SQ_SIZE
+        );
         enemy->followPlayer(playerPosX);
-        removeEnemyAndUpdateScore(this->enemies_, *this->player_);
     }
 }
 
@@ -196,9 +189,8 @@ void Game_ASH::updateMap() const {
 
 void Game_ASH::drainCollisionQueue() {
     while (!this->collisionEventQueue_->empty()) {
-        const auto event = this->collisionEventQueue_->front();
-
-        if (std::holds_alternative<CollisionScanner::PlayerCollisionEvent>(event)) {
+        if (const auto event = this->collisionEventQueue_->front(); std::holds_alternative<
+            CollisionScanner::PlayerCollisionEvent>(event)) {
             const auto &pce = std::get<CollisionScanner::PlayerCollisionEvent>(event);
 
             if (this->player_->canGiveDamageInFrame()) {
@@ -215,9 +207,8 @@ void Game_ASH::drainCollisionQueue() {
             const auto &ece = std::get<CollisionScanner::EnemyCollisionEvent>(event);
 
             const uint16_t e1X = ece.e1.getPosX();
-            const uint16_t e2X = ece.e2.getPosX();
 
-            if (e1X < e2X) {
+            if (const uint16_t e2X = ece.e2.getPosX(); e1X < e2X) {
                 ece.e2.setPosX(e1X + Enemy::ENEMY_SEPARATION);
             } else if (e2X < e1X) {
                 ece.e1.setPosX(e2X + Enemy::ENEMY_SEPARATION);
@@ -281,7 +272,28 @@ void Game_ASH::drainInputQueue() const {
                 default:
                     break;
             }
-            eventQueue_->pop();
         }
+        eventQueue_->pop();
     }
+}
+
+void Game_ASH::nextLevel() {
+    if (this->currentLevel_++ == 1) {
+        this->gameMap_ = std::make_unique<MapLVL2>();
+    } else {
+        return;
+    }
+
+    this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
+    this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
+
+    this->enemies_.clear();
+    this->collectibles_.clear();
+
+    this->player_->setPosX(INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE);
+    this->player_->setPosY(INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE);
+    this->player_->setMap(this->gameMap_.get());
+
+    spawnEnemies();
+    spawnCollectibles();
 }

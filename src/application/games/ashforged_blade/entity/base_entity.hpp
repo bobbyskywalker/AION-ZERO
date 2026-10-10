@@ -6,7 +6,7 @@
 
 class BaseEntity {
 protected:
-    BaseMap & map_;
+    BaseMap * map_;
 
     uint16_t health_;
 
@@ -23,7 +23,7 @@ public:
         const uint16_t initialX,
         const uint16_t initialY,
         const uint16_t initialHealth,
-        BaseMap & map
+        BaseMap * map
     ) : map_(map), health_(initialHealth), posX_(initialX), posY_(initialY) {}
     virtual ~BaseEntity() = default;
 

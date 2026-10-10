@@ -76,7 +76,10 @@ private:
     void updateCollectibles();
 
     void spawnEnemies();
-    void updateEnemies(uint16_t playerPosX);
+    void updateEnemies(uint16_t playerPosX) const;
+    void removeDeadEnemies();
+
+    void nextLevel();
 
     static constexpr uint16_t HUD_X = 10;
     static constexpr uint16_t HUD_Y = 10;

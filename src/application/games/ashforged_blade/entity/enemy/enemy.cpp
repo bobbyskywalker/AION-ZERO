@@ -5,7 +5,7 @@ Enemy::Enemy(
     const uint16_t initialY,
     const uint16_t initialHealth,
     BaseMap &map
-) : BaseEntity(initialX, initialY, initialHealth, map),
+) : BaseEntity(initialX, initialY, initialHealth, &map),
     animator_(EnemyAnimator(*this)),
     currentState_(EnemyState::FOLLOWING) {}
 
