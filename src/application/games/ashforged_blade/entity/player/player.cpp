@@ -96,3 +96,11 @@ bool Player::canGiveDamageInFrame() const {
 void Player::updateScore(const uint16_t val) {
     this->score_ += val;
 }
+
+void Player::heal(const uint16_t healVal) {
+    if (this->health_ + healVal >= 100) {
+        this->health_ = 100;
+    } else {
+        this->health_ += healVal;
+    }
+}

@@ -59,7 +59,7 @@ private:
     void processMenuState();
 
     void drainInputQueue() const;
-    void drainCollisionQueue() const;
+    void drainCollisionQueue();
     void updatePlayer() const;
     void updateHud();
 

@@ -76,7 +76,8 @@ void Game_ASH::processCurrentState() {
 void Game_ASH::processGameplayState() {
     this->display_.clear(BLACK);
     InputEngine::inputListener(*this->eventQueue_);
-    CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_);
+    CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_,
+                                           this->collectibles_);
     updatePlayer();
     updateEnemies(this->player_->getPosX());
     updateCollectibles();
@@ -170,7 +171,7 @@ void Game_ASH::updateMap() const {
     gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE, this->gameMap_->getMap());
 }
 
-void Game_ASH::drainCollisionQueue() const {
+void Game_ASH::drainCollisionQueue() {
     while (!this->collisionEventQueue_->empty()) {
         const auto event = this->collisionEventQueue_->front();
 
@@ -180,22 +181,56 @@ void Game_ASH::drainCollisionQueue() const {
             if (this->player_->canGiveDamageInFrame()) {
                 pce.hitWith.takeDamage(Player::PLAYER_DAMAGE);
             }
+
             if (pce.hitWith.isDamagePossible() && !pce.hitWith.isGivenDamageInFrame()) {
                 pce.hitWith.setGivenDamageInFrame(true);
                 this->player_->takeDamage(Enemy::ENEMY_DAMAGE);
             }
+
             pce.hitWith.setCurrentState(EnemyState::ATTACKING);
         } else if (std::holds_alternative<CollisionScanner::EnemyCollisionEvent>(event)) {
             const auto &ece = std::get<CollisionScanner::EnemyCollisionEvent>(event);
 
             const uint16_t e1X = ece.e1.getPosX();
             const uint16_t e2X = ece.e2.getPosX();
+
             if (e1X < e2X) {
                 ece.e2.setPosX(e1X + Enemy::ENEMY_SEPARATION);
             } else if (e2X < e1X) {
                 ece.e1.setPosX(e2X + Enemy::ENEMY_SEPARATION);
             }
+        } else if (std::holds_alternative<CollisionScanner::CollectibleCollisionEvent>(event)) {
+            const auto &cce = std::get<CollisionScanner::CollectibleCollisionEvent>(event);
+
+            const auto it = std::find_if(
+                collectibles_.begin(),
+                collectibles_.end(),
+                [&cce](auto &item) {
+                    return std::visit(
+                        [&cce](auto &collectible) {
+                            return static_cast<BaseCollectible *>(&collectible)
+                                   == &cce.collectible;
+                        },
+                        item
+                    );
+                }
+            );
+
+            if (it != collectibles_.end()) {
+                std::visit(
+                    [&cce]([[maybe_unused]] auto &collectible) {
+                        using T = std::decay_t<decltype(collectible)>;
+
+                        if constexpr (std::is_same_v<T, HealthCollectible>) {
+                            cce.target.heal(HealthCollectible::HEALTH_VALUE);
+                        }
+                    },
+                    *it
+                );
+                collectibles_.erase(it);
+            }
         }
+
         this->collisionEventQueue_->pop();
     }
 }

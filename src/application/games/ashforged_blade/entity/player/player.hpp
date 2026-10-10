@@ -40,6 +40,7 @@ public:
     void updateJump();
     void updateAttack();
     void attack();
+    void heal(uint16_t healVal);
 
     void updateScore(uint16_t val);
     [[nodiscard]] uint16_t getScore() const {return this->score_;}
