@@ -21,7 +21,8 @@ namespace MapDescription {
         TILE_NONE_ID,
         TILE_WALKABLE_ID,
         ENEMY_POS_ID,
-        HEALTH_COLLECTIBLE_ID
+        HEALTH_COLLECTIBLE_ID,
+        SCORE_COLLECTIBLE_ID
     };
 }
 

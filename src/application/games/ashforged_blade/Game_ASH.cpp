@@ -34,16 +34,39 @@ void Game_ASH::spawnEnemies() {
 }
 
 void Game_ASH::spawnCollectibles() {
-    const auto healthCollectibleCoords = BaseMap::provideTypeCoordinates(
+    const auto fetchCollectibleCoords =
+            [](const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> &map, const MapDescription::TILE_ID id) {
+        return BaseMap::provideTypeCoordinates(map, id);
+    };
+    const auto emplaceCollectiblesForType =
+            [this](auto factory, const std::vector<std::pair<uint8_t, uint8_t> > &coords) {
+        for (const auto &[x, y]: coords) {
+            collectibles_.emplace_back(
+                factory(
+                    static_cast<uint16_t>(x * TILE_SQ_SIZE),
+                    static_cast<uint16_t>(y * TILE_SQ_SIZE)
+                )
+            );
+        }
+    };
+
+    const auto healthCollectibleCoords = fetchCollectibleCoords(
         this->gameMap_->getMap(), MapDescription::TILE_ID::HEALTH_COLLECTIBLE_ID
     );
-    collectibles_.reserve(healthCollectibleCoords.size());
+    const auto scoreCollectibleCoords = fetchCollectibleCoords(
+        this->gameMap_->getMap(), MapDescription::TILE_ID::SCORE_COLLECTIBLE_ID
+    );
 
-    for (auto [x, y]: healthCollectibleCoords) {
-        collectibles_.emplace_back(
-            HealthCollectible{static_cast<uint16_t>(x * TILE_SQ_SIZE), static_cast<uint16_t>(y * TILE_SQ_SIZE)}
-        );
-    }
+    collectibles_.reserve(healthCollectibleCoords.size() + scoreCollectibleCoords.size());
+
+    emplaceCollectiblesForType(
+        [](const uint16_t x, const uint16_t y) { return HealthCollectible{x, y}; },
+        healthCollectibleCoords
+    );
+    emplaceCollectiblesForType(
+        [](const uint16_t x, const uint16_t y) { return ScoreCollectible{x, y}; },
+        scoreCollectibleCoords
+    );
 }
 
 ModuleSwitchRequest Game_ASH::runGame() {
@@ -223,6 +246,8 @@ void Game_ASH::drainCollisionQueue() {
 
                         if constexpr (std::is_same_v<T, HealthCollectible>) {
                             cce.target.heal(HealthCollectible::HEALTH_VALUE);
+                        } else if constexpr (std::is_same_v<T, ScoreCollectible>) {
+                            cce.target.updateScore(300);
                         }
                     },
                     *it
