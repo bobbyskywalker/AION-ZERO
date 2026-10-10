@@ -1,5 +1,7 @@
 #include "base_map.hpp"
 
+#include <algorithm>
+
 void BaseMap::drawBg([[maybe_unused]] display::LcdDisplay &display, const unsigned char* bg) const {
     for (uint8_t y = 0; y < display::HEIGHT; y++) {
         for (uint8_t x = 0; x < display::WIDTH; x++) {
@@ -49,18 +51,28 @@ std::vector<std::pair<uint8_t, uint8_t> > BaseMap::provideTypeCoordinates(
     return coordinates;
 }
 
-void BaseMap::updateCamera(const uint16_t playerPosX, const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT> & map) {
-    if (const uint16_t screenTileX = static_cast<int16_t>(playerPosX) - static_cast<int16_t>(cameraX_);
-        screenTileX >= CAMERA_SIZE) {
-        cameraX_ = playerPosX - CAMERA_SIZE + 1;
-        } else if (screenTileX < 0) {
-            // todo: unsigned u idiot
-            cameraX_ = playerPosX;
-        }
+void BaseMap::updateCamera(
+    const uint16_t playerPosX,
+    const std::array<std::array<uint8_t, MAP_WIDTH>, MAP_HEIGHT>& map)
+{
+    constexpr int LEVEL_WIDTH = 16;
 
-    if (cameraX_ > MAP_WIDTH - CAMERA_SIZE) {
-        cameraX_ = MAP_WIDTH - CAMERA_SIZE;
+    const int levelStart =
+        (playerPosX / LEVEL_WIDTH) * LEVEL_WIDTH;
+    const int levelEnd = levelStart + LEVEL_WIDTH;
+
+    if (const int screenTileX =static_cast<int>(playerPosX) - static_cast<int>(cameraX_); screenTileX >= CAMERA_SIZE) {
+        cameraX_ = playerPosX - CAMERA_SIZE + 1;
+    } else if (screenTileX < 0) {
+        cameraX_ = playerPosX;
     }
+
+    const int minCameraX = levelStart;
+    const int maxCameraX = levelEnd - CAMERA_SIZE;
+
+    cameraX_ = static_cast<uint16_t>(
+        std::clamp(static_cast<int>(cameraX_), minCameraX, maxCameraX)
+    );
 
     for (size_t y = 0; y < CAMERA_SIZE; ++y) {
         for (size_t x = 0; x < CAMERA_SIZE; ++x) {
