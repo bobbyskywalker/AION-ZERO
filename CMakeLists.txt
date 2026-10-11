@@ -132,6 +132,9 @@ add_executable(aion-zero-fmw
         src/application/games/ashforged_blade/collectible/score_collectible.cpp
         src/application/games/ashforged_blade/maps/lvl_2.hpp
         src/application/games/ashforged_blade/maps/lvl2_assets.hpp
+        src/application/games/ashforged_blade/menu/Menu_ASH.cpp
+        src/application/games/ashforged_blade/menu/Menu_ASH.hpp
+        src/application/games/ashforged_blade/menu/menu_assets.hpp
 )
 
 target_link_libraries(aion-zero-fmw

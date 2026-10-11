@@ -15,6 +15,7 @@
 #include "collectible/score_collectible.hpp"
 #include "entity/enemy/enemy.hpp"
 #include "entity/player/player.hpp"
+#include "menu/Menu_ASH.hpp"
 
 static uint64_t constexpr FPS =  33'000;
 
@@ -42,6 +43,8 @@ class Game_ASH {
 private:
     Game_ASH_State currentState_;
 
+    std::unique_ptr<Menu_ASH> gameMenu_;
+
     std::unique_ptr<std::queue<CollisionScanner::CollisionEvent>> collisionEventQueue_;
     std::unique_ptr<std::queue<InputEngine::ButtonEvent>> eventQueue_;
 
@@ -54,14 +57,21 @@ private:
 
     uint8_t currentLevel_ = 1;
 
+    bool menuUpWasDown_{false};
+    bool menuDownWasDown_{false};
+
+    void initializeGameplay();
+
     void processCurrentState();
     void processGameplayState();
     void processPausedState();
     void processMenuState();
 
-    void drainInputQueue() const;
+    void drainInputQueue();
+    void drainInputQueueForGameplayState() const;
+    void drainInputQueueForMenuState();
     void drainCollisionQueue();
-    void updatePlayer() const;
+    void updatePlayer();
     void updateHud();
 
     void drawMap();

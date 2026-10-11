@@ -8,8 +8,12 @@
 #include "collectible/health_collectible.hpp"
 #include "entity/enemy/enemy_state.hpp"
 
-Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::GAMEPLAY), display_(display) {
+Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::MENU),
+                                                   gameMenu_(std::make_unique<Menu_ASH>()), display_(display) {
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
+}
+
+void Game_ASH::initializeGameplay() {
     this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
     this->gameMap_ = std::make_unique<MapLVL1>();
     this->player_ = std::make_unique<Player>(
@@ -105,7 +109,6 @@ void Game_ASH::processGameplayState() {
     updateEnemies(this->player_->getPosX());
     updateCollectibles();
     drainCollisionQueue();
-    removeDeadEnemies();
     updateMap();
     drawMap();
     drawPlayer();
@@ -120,7 +123,10 @@ void Game_ASH::processGameplayState() {
 }
 
 void Game_ASH::processMenuState() {
-    // todo
+    InputEngine::inputListener(*this->eventQueue_);
+    drainInputQueue();
+    this->gameMenu_->runMenu(this->display_);
+    this->display_.update();
 }
 
 void Game_ASH::processPausedState() {
@@ -158,7 +164,7 @@ void Game_ASH::drawCollectibles() const {
     }
 }
 
-void Game_ASH::updatePlayer() const {
+void Game_ASH::updatePlayer() {
     drainInputQueue();
     this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
     this->player_->updateJump();
@@ -251,29 +257,60 @@ void Game_ASH::drainCollisionQueue() {
     }
 }
 
-void Game_ASH::drainInputQueue() const {
+void Game_ASH::drainInputQueue() {
     while (!this->eventQueue_->empty()) {
-        if (const auto [state, button] = eventQueue_->front();
-            state == InputEngine::ButtonState::PRESSED
-        ) {
-            switch (button) {
-                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
-                    this->player_->moveHorizontally(true, BaseMap::getMapWidth());
-                    break;
-                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
-                    this->player_->moveHorizontally(false, BaseMap::getMapWidth());
-                    break;
-                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
-                    this->player_->startJump();
-                    break;
-                case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
-                    this->player_->attack();
-                    break;
-                default:
-                    break;
-            }
+        if (this->currentState_ == Game_ASH_State::GAMEPLAY) {
+            drainInputQueueForGameplayState();
+        } else if (this->currentState_ == Game_ASH_State::MENU) {
+            drainInputQueueForMenuState();
         }
         eventQueue_->pop();
+    }
+}
+
+void Game_ASH::drainInputQueueForMenuState() {
+    const auto [state, button] = eventQueue_->front();
+
+    constexpr auto upPin = InputEngine::BUTTONS.at(ASH_MENU_BUTTONS::BUTTON_UP);
+    constexpr auto downPin = InputEngine::BUTTONS.at(ASH_MENU_BUTTONS::BUTTON_DOWN);
+
+    if (button == upPin) {
+        if (state == InputEngine::ButtonState::PRESSED && !menuUpWasDown_) {
+            gameMenu_->updateOption(0);
+            menuUpWasDown_ = true;
+        } else if (state == InputEngine::ButtonState::RELEASED) {
+            menuUpWasDown_ = false;
+        }
+    } else if (button == downPin) {
+        if (state == InputEngine::ButtonState::PRESSED && !menuDownWasDown_) {
+            gameMenu_->updateOption(1);
+            menuDownWasDown_ = true;
+        } else if (state == InputEngine::ButtonState::RELEASED) {
+            menuDownWasDown_ = false;
+        }
+    }
+}
+
+void Game_ASH::drainInputQueueForGameplayState() const {
+    if (const auto [state, button] = eventQueue_->front();
+        state == InputEngine::ButtonState::PRESSED
+    ) {
+        switch (button) {
+            case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_LEFT):
+                this->player_->moveHorizontally(true, BaseMap::getMapWidth());
+                break;
+            case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_RIGHT):
+                this->player_->moveHorizontally(false, BaseMap::getMapWidth());
+                break;
+            case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_JUMP):
+                this->player_->startJump();
+                break;
+            case InputEngine::BUTTONS.at(ASH_GAMEPLAY_BUTTONS::BUTTON_ATTACK):
+                this->player_->attack();
+                break;
+            default:
+                break;
+        }
     }
 }
 

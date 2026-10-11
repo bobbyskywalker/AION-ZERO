@@ -31,8 +31,6 @@ bool InputEngine::wasButtonPressed(const uint8_t& pin) {
 /* event emitting helper, takes a consumer-pointer to write events to */
 void InputEngine::inputListener(std::queue<ButtonEvent> &eventQueue) {
     for (auto const& pin : BUTTONS) {
-        if (!gpio_get(pin)) {
-            eventQueue.push(ButtonEvent{getButtonState(pin), pin});
-        }
+        eventQueue.push(ButtonEvent{getButtonState(pin), pin});
     }
 }

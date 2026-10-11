@@ -1,0 +1,31 @@
+#ifndef AION_ZERO_FMW_MENU_ASH_HPP
+#define AION_ZERO_FMW_MENU_ASH_HPP
+
+#include <cstdint>
+
+#include "../../../../display/display.hpp"
+
+enum class MENU_ASH_OPTIONS {
+    PLAY,
+    TUTORIAL
+};
+
+class Menu_ASH {
+private:
+
+    void showTutorial();
+    void draw([[maybe_unused]] display::LcdDisplay & display) const;
+
+    static constexpr MENU_ASH_OPTIONS menuOptions_[] = {MENU_ASH_OPTIONS::PLAY, MENU_ASH_OPTIONS::TUTORIAL};
+    uint8_t currentOption_{0};
+
+public:
+    Menu_ASH() = default;
+
+    void runMenu(display::LcdDisplay & display);
+    void updateOption(uint8_t dir /* 0 up, 1 down */);
+
+};
+
+
+#endif //AION_ZERO_FMW_MENU_ASH_HPP
