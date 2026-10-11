@@ -16,7 +16,6 @@ private:
     void showTutorial();
     void draw([[maybe_unused]] display::LcdDisplay & display) const;
 
-    static constexpr MENU_ASH_OPTIONS menuOptions_[] = {MENU_ASH_OPTIONS::PLAY, MENU_ASH_OPTIONS::TUTORIAL};
     uint8_t currentOption_{0};
 
 public:
@@ -24,6 +23,9 @@ public:
 
     void runMenu(display::LcdDisplay & display);
     void updateOption(uint8_t dir /* 0 up, 1 down */);
+
+    static constexpr MENU_ASH_OPTIONS menuOptions_[] = {MENU_ASH_OPTIONS::PLAY, MENU_ASH_OPTIONS::TUTORIAL};
+    [[nodiscard]] uint8_t getSelectedOption() const {return this->currentOption_;};
 
 };
 

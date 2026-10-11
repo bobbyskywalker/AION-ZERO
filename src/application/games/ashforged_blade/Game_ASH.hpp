@@ -57,6 +57,7 @@ private:
 
     uint8_t currentLevel_ = 1;
 
+    bool menuEnterWasDown_{false};
     bool menuUpWasDown_{false};
     bool menuDownWasDown_{false};
 

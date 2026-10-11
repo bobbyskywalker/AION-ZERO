@@ -10,6 +10,7 @@
 
 Game_ASH::Game_ASH(display::LcdDisplay &display) : currentState_(Game_ASH_State::MENU),
                                                    gameMenu_(std::make_unique<Menu_ASH>()), display_(display) {
+    sleep_ms(500);
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
 }
 
@@ -109,6 +110,7 @@ void Game_ASH::processGameplayState() {
     updateEnemies(this->player_->getPosX());
     updateCollectibles();
     drainCollisionQueue();
+    removeDeadEnemies();
     updateMap();
     drawMap();
     drawPlayer();
@@ -124,9 +126,9 @@ void Game_ASH::processGameplayState() {
 
 void Game_ASH::processMenuState() {
     InputEngine::inputListener(*this->eventQueue_);
-    drainInputQueue();
     this->gameMenu_->runMenu(this->display_);
     this->display_.update();
+    drainInputQueue();
 }
 
 void Game_ASH::processPausedState() {
@@ -189,10 +191,32 @@ void Game_ASH::updateEnemies(const uint16_t playerPosX) const {
     }
 }
 
+void Game_ASH::removeDeadEnemies() {
+    const size_t oldSize = enemies_.size();
+
+    enemies_.erase(
+        std::remove_if(
+            enemies_.begin(),
+            enemies_.end(),
+            [](const std::unique_ptr<Enemy>& enemy) {
+                return enemy->getHealth() == 0;
+            }
+        ),
+        enemies_.end()
+    );
+
+    const size_t killedCount = oldSize - enemies_.size();
+
+    for (size_t i = 0; i < killedCount; ++i) {
+        player_->updateScore(Enemy::KILL_SCORE_REWARD);
+    }
+}
+
 void Game_ASH::updateMap() const {
     gameMap_->updateCamera(this->player_->getPosX() / TILE_SQ_SIZE, this->gameMap_->getMap());
 }
 
+// todo : certainly needs a refactor xd
 void Game_ASH::drainCollisionQueue() {
     while (!this->collisionEventQueue_->empty()) {
         if (const auto event = this->collisionEventQueue_->front(); std::holds_alternative<
@@ -268,11 +292,13 @@ void Game_ASH::drainInputQueue() {
     }
 }
 
+// also a refactor candidate lol
 void Game_ASH::drainInputQueueForMenuState() {
     const auto [state, button] = eventQueue_->front();
 
     constexpr auto upPin = InputEngine::BUTTONS.at(ASH_MENU_BUTTONS::BUTTON_UP);
     constexpr auto downPin = InputEngine::BUTTONS.at(ASH_MENU_BUTTONS::BUTTON_DOWN);
+    constexpr auto enterPin = InputEngine::BUTTONS.at(ASH_MENU_BUTTONS::BUTTON_ENTER);
 
     if (button == upPin) {
         if (state == InputEngine::ButtonState::PRESSED && !menuUpWasDown_) {
@@ -287,6 +313,16 @@ void Game_ASH::drainInputQueueForMenuState() {
             menuDownWasDown_ = true;
         } else if (state == InputEngine::ButtonState::RELEASED) {
             menuDownWasDown_ = false;
+        }
+    } else if (button == enterPin) {
+        if (state == InputEngine::ButtonState::PRESSED && !menuEnterWasDown_) {
+            menuEnterWasDown_ = true;
+            if (this->gameMenu_->getSelectedOption() == static_cast<uint8_t>(MENU_ASH_OPTIONS::PLAY)) {
+                initializeGameplay();
+                this->currentState_ = Game_ASH_State::GAMEPLAY;
+            }
+        } else if (state == InputEngine::ButtonState::RELEASED) {
+            menuEnterWasDown_ = false;
         }
     }
 }
