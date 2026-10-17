@@ -22,7 +22,7 @@ static uint64_t constexpr FPS =  33'000;
 enum class Game_ASH_State {
     MENU,
     GAMEPLAY,
-    PAUSED
+    EXITING,
 };
 
 namespace ASH_GAMEPLAY_BUTTONS {
@@ -64,9 +64,8 @@ private:
 
     void initializeGameplay();
 
-    void processCurrentState();
+    bool processCurrentState();
     void processGameplayState();
-    void processPausedState();
     void processMenuState();
 
     void drainInputQueue();

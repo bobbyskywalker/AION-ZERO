@@ -26,8 +26,8 @@ void Menu_ASH::draw([[maybe_unused]] display::LcdDisplay & display) const {
 
     if (this->currentOption_ == static_cast<uint8_t>(MENU_ASH_OPTIONS::PLAY)) {
         drawMenu(PLAY_SELECTED);
-    } else if (this->currentOption_ == static_cast<uint8_t>(MENU_ASH_OPTIONS::TUTORIAL)) {
-        drawMenu(TUTORIAL_SELECTED);
+    } else if (this->currentOption_ == static_cast<uint8_t>(MENU_ASH_OPTIONS::EXIT)) {
+        drawMenu(EXIT_SELECTED);
     }
 }
 
@@ -39,8 +39,4 @@ void Menu_ASH::updateOption(const uint8_t dir) {
     } else if (dir == 1) {
         currentOption_ = (currentOption_ + 1) % size;
     }
-}
-
-void Menu_ASH::showTutorial() {
-
 }

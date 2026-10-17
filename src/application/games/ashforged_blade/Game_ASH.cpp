@@ -80,7 +80,9 @@ ModuleSwitchRequest Game_ASH::runGame() {
     while (true) {
         const uint64_t frameStart = time_us_64();
 
-        processCurrentState();
+        if (!processCurrentState()) {
+            return ModuleSwitchRequest::MainMenu;
+        }
         const uint64_t frameUs = time_us_64() - frameStart;
 
         if (constexpr uint64_t targetUs = FPS; frameUs < targetUs) {
@@ -89,18 +91,18 @@ ModuleSwitchRequest Game_ASH::runGame() {
     }
 }
 
-void Game_ASH::processCurrentState() {
+bool Game_ASH::processCurrentState() {
     switch (this->currentState_) {
         case Game_ASH_State::GAMEPLAY:
             processGameplayState();
-            break;
-        case Game_ASH_State::PAUSED:
-            processPausedState();
-            break;
+            return true;
+        case Game_ASH_State::EXITING:
+            return false;
         case Game_ASH_State::MENU:
             processMenuState();
-            break;
+            return true;
     }
+    return false;
 }
 
 void Game_ASH::processGameplayState() {
@@ -134,10 +136,6 @@ void Game_ASH::processMenuState() {
     this->gameMenu_->runMenu(this->display_);
     this->display_.update();
     drainInputQueue();
-}
-
-void Game_ASH::processPausedState() {
-    // todo
 }
 
 void Game_ASH::drawMap() {
@@ -329,6 +327,8 @@ void Game_ASH::drainInputQueueForMenuState() {
             if (this->gameMenu_->getSelectedOption() == static_cast<uint8_t>(MENU_ASH_OPTIONS::PLAY)) {
                 initializeGameplay();
                 this->currentState_ = Game_ASH_State::GAMEPLAY;
+            } else {
+                this->currentState_ = Game_ASH_State::EXITING;
             }
         } else if (state == InputEngine::ButtonState::RELEASED) {
             menuEnterWasDown_ = false;
