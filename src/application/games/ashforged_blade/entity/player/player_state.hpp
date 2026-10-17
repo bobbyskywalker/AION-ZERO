@@ -1,0 +1,12 @@
+#ifndef AION_ZERO_FMW_PLAYER_STATE_HPP
+#define AION_ZERO_FMW_PLAYER_STATE_HPP
+
+enum class PlayerState {
+    IDLE,
+    WALKING,
+    JUMPING,
+    FALLING,
+    ATTACKING
+};
+
+#endif //AION_ZERO_FMW_PLAYER_STATE_HPP

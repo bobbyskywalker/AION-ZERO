@@ -1,0 +1,50 @@
+#ifndef AION_ZERO_FMW_DRAW_HPP
+#define AION_ZERO_FMW_DRAW_HPP
+
+#include <cstdint>
+#include <string>
+#include "../../../../display/display.hpp"
+
+void drawTile(
+    display::LcdDisplay& display,
+    const unsigned char* image,
+    uint16_t x,
+    uint16_t y,
+    uint16_t imageWidth,
+    uint16_t imageHeight
+);
+
+void drawSprite(
+    const uint8_t* image,
+    int x,
+    int y,
+    uint8_t width,
+    uint8_t height
+);
+
+void drawPixel(
+    uint16_t x,
+    uint16_t y,
+    uint16_t color
+);
+
+void drawRectangle(
+    uint16_t xStart,
+    uint16_t yStart,
+    uint16_t xEnd,
+    uint16_t yEnd,
+    uint16_t color
+);
+
+void drawString(
+    uint16_t x,
+    uint16_t y,
+    const std::string & msg,
+    sFONT *font,
+    uint16_t colorBg,
+    uint16_t colorFg
+);
+
+[[nodiscard]] UWORD textWidth(std::string const & text, sFONT font);
+
+#endif //AION_ZERO_FMW_DRAW_HPP

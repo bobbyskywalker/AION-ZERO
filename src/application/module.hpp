@@ -5,8 +5,8 @@
 
 // all the module implementations ought to be registered here
 enum class ModuleSwitchRequest {
-    None,
-    MainMenu
+    MainMenu,
+    AshforgedBlade
 };
 
 class Module {

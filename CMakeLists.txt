@@ -98,6 +98,43 @@ add_executable(aion-zero-fmw
         src/application/main_menu/main_menu.cpp
         src/engine/input.hpp
         src/engine/input.cpp
+        src/application/games/ashforged_blade/Module_ASH.hpp
+        src/application/games/ashforged_blade/Game_ASH.hpp
+        src/application/games/ashforged_blade/Module_ASH.cpp
+        src/application/games/ashforged_blade/maps/lvl_1.hpp
+        src/application/games/ashforged_blade/Game_ASH.cpp
+        src/application/games/ashforged_blade/util/draw.hpp
+        src/application/games/ashforged_blade/util/draw.cpp
+        src/application/games/ashforged_blade/maps/base_map.hpp
+        src/application/games/ashforged_blade/maps/lvl1_assets.hpp
+        src/application/games/ashforged_blade/entity/player/player.hpp
+        src/application/games/ashforged_blade/entity/player/player_assets.hpp
+        src/application/games/ashforged_blade/entity/player/player.cpp
+        src/application/games/ashforged_blade/entity/player/player_animator.cpp
+        src/application/games/ashforged_blade/entity/player/player_animator.hpp
+        src/application/games/ashforged_blade/entity/player/player_state.hpp
+        src/application/games/ashforged_blade/entity/enemy/enemy.cpp
+        src/application/games/ashforged_blade/entity/enemy/enemy.hpp
+        src/application/games/ashforged_blade/entity/base_entity.hpp
+        src/application/games/ashforged_blade/entity/enemy/enemy_assets.hpp
+        src/application/games/ashforged_blade/collision_scanner.hpp
+        src/application/games/ashforged_blade/entity/enemy/enemy_animator.hpp
+        src/application/games/ashforged_blade/entity/enemy/enemy_animator.cpp
+        src/application/games/ashforged_blade/entity/enemy/enemy_state.hpp
+        src/application/games/ashforged_blade/entity/entity_animator.hpp
+        src/application/games/ashforged_blade/entity/entity_animator.cpp
+        src/application/games/ashforged_blade/collectible/base_collectible.hpp
+        src/application/games/ashforged_blade/collectible/health_collectible.cpp
+        src/application/games/ashforged_blade/collectible/health_collectible.hpp
+        src/application/games/ashforged_blade/collectible/collectible_assets.hpp
+        src/application/games/ashforged_blade/maps/base_map.cpp
+        src/application/games/ashforged_blade/collectible/score_collectible.hpp
+        src/application/games/ashforged_blade/collectible/score_collectible.cpp
+        src/application/games/ashforged_blade/maps/lvl_2.hpp
+        src/application/games/ashforged_blade/maps/lvl2_assets.hpp
+        src/application/games/ashforged_blade/menu/Menu_ASH.cpp
+        src/application/games/ashforged_blade/menu/Menu_ASH.hpp
+        src/application/games/ashforged_blade/menu/menu_assets.hpp
 )
 
 target_link_libraries(aion-zero-fmw

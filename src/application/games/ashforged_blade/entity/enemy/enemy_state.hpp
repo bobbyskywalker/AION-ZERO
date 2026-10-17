@@ -1,0 +1,9 @@
+#ifndef AION_ZERO_FMW_ENEMY_STATE_HPP
+#define AION_ZERO_FMW_ENEMY_STATE_HPP
+
+enum class EnemyState {
+    ATTACKING,
+    FOLLOWING
+};
+
+#endif //AION_ZERO_FMW_ENEMY_STATE_HPP

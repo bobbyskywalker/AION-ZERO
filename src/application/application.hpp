@@ -14,10 +14,16 @@ public:
     explicit Application(display::LcdDisplay& display);
     ~Application() = default;
 
-    template<typename T>
-    void switchModule();
+    template<typename T, typename... Args>
+    void switchModule(Args&&... args);
 
     [[nodiscard]] Module& getCurrentModule() const { return *currentModule_; }
 };
+
+template<typename T, typename... Args>
+void Application::switchModule(Args&&... args) {
+    currentModule_ =
+        std::make_unique<T>(std::forward<Args>(args)...);
+}
 
 #endif //AION_ZERO_FMW_APPLICATION_HPP

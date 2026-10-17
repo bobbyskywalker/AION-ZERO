@@ -1,0 +1,9 @@
+#include "Module_ASH.hpp"
+
+Module_ASH::Module_ASH(display::LcdDisplay &display) : Module(display), game_(Game_ASH(display)) {
+}
+
+[[nodiscard]] ModuleSwitchRequest Module_ASH::loop() {
+    const ModuleSwitchRequest event = this->game_.runGame();
+    return event;
+}
