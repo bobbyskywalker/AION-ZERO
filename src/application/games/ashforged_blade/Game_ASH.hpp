@@ -73,7 +73,7 @@ private:
     void drainInputQueueForGameplayState() const;
     void drainInputQueueForMenuState();
     void drainCollisionQueue();
-    void updatePlayer();
+    [[nodiscard]] bool updatePlayer();
     void updateHud();
 
     void drawMap();
@@ -93,7 +93,8 @@ private:
 
     void lvlIntro() const;
     void nextLevel();
-    void gameWonOutro() const;
+    void gameEndedOutro(bool won) const;
+    void clearOnGameOver();
 
     static constexpr uint16_t HUD_X = 10;
     static constexpr uint16_t HUD_Y = 10;

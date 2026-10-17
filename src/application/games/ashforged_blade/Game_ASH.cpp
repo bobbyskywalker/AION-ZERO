@@ -108,7 +108,10 @@ void Game_ASH::processGameplayState() {
     InputEngine::inputListener(*this->eventQueue_);
     CollisionScanner::scanForAllCollisions(*this->collisionEventQueue_, *this->player_, this->enemies_,
                                            this->collectibles_);
-    updatePlayer();
+    if (!updatePlayer()) {
+        clearOnGameOver();
+        return;
+    }
     updateEnemies(this->player_->getPosX());
     updateCollectibles();
     drainCollisionQueue();
@@ -168,11 +171,15 @@ void Game_ASH::drawCollectibles() const {
     }
 }
 
-void Game_ASH::updatePlayer() {
+[[nodiscard]] bool Game_ASH::updatePlayer() {
+    if (!this->player_->getHealth()) {
+        return false;
+    }
     drainInputQueue();
     this->player_->setCameraPosX(this->gameMap_->getCameraX() * TILE_SQ_SIZE);
     this->player_->updateJump();
     this->player_->updateAttack();
+    return true;
 }
 
 void Game_ASH::updateCollectibles() {
@@ -362,7 +369,7 @@ void Game_ASH::nextLevel() {
 
     if (currentLevel_ > maxLevels_) {
         currentLevel_ = 1;
-        gameWonOutro();
+        gameEndedOutro(true);
         currentState_ = Game_ASH_State::MENU;
         return ;
     }
@@ -388,13 +395,23 @@ void Game_ASH::lvlIntro() const {
     sleep_ms(3000);
 }
 
-void Game_ASH::gameWonOutro() const {
+/* reusable for win / game over outro screens */
+void Game_ASH::gameEndedOutro(const bool won) const {
     constexpr uint8_t separation = 10;
-    const std::string gameWonStr = "You win!";
+
+    const std::string gameStateStr = won ? "You win!" : "Game Over";
     const std::string scoreStr = "Score: " + std::to_string(this->player_->getScore());
     display_.clear(BLACK);
-    drawString(display::WIDTH / 2 - textWidth(gameWonStr, Font12) / 2, display::HEIGHT / 2, gameWonStr, &Font12, BLACK, WHITE);
+    drawString(display::WIDTH / 2 - textWidth(gameStateStr, Font12) / 2, display::HEIGHT / 2, gameStateStr, &Font12, BLACK, WHITE);
     drawString(display::WIDTH / 2 - textWidth(scoreStr, Font12) / 2, display::HEIGHT / 2 + separation, scoreStr, &Font12, BLACK, WHITE);
     display_.update();
     sleep_ms(3000);
+}
+
+void Game_ASH::clearOnGameOver() {
+    this->enemies_.clear();
+    this->collectibles_.clear();
+    currentLevel_ = 1;
+    gameEndedOutro(false);
+    currentState_ = Game_ASH_State::MENU;
 }

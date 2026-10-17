@@ -14,7 +14,7 @@ public:
 
     void draw() const override;
 
-    static constexpr uint16_t HEALTH_VALUE = 25;
+    static constexpr uint16_t HEALTH_VALUE = 50;
 };
 
 #endif //AION_ZERO_FMW_HEALTH_COLLECTIBLE_HPP
