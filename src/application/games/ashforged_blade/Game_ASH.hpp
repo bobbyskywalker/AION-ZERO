@@ -90,6 +90,7 @@ private:
     void updateEnemies(uint16_t playerPosX) const;
     void removeDeadEnemies();
 
+    void lvlIntro() const;
     void nextLevel();
 
     static constexpr uint16_t HUD_X = 10;

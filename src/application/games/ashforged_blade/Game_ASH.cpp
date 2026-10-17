@@ -24,6 +24,8 @@ void Game_ASH::initializeGameplay() {
     );
     spawnEnemies();
     spawnCollectibles();
+
+    lvlIntro();
 }
 
 void Game_ASH::spawnEnemies() {
@@ -369,4 +371,14 @@ void Game_ASH::nextLevel() {
 
     spawnEnemies();
     spawnCollectibles();
+
+    lvlIntro();
+}
+
+void Game_ASH::lvlIntro() const {
+    const std::string lvlStr = "LEVEL " + std::to_string(currentLevel_);
+    display_.clear(BLACK);
+    drawString(display::WIDTH / 2 - textWidth(lvlStr, Font12) / 2, display::HEIGHT / 2, lvlStr, &Font12, BLACK, WHITE);
+    display_.update();
+    sleep_ms(3000);
 }
