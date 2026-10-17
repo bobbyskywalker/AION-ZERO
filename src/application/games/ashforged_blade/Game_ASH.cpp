@@ -355,15 +355,20 @@ void Game_ASH::drainInputQueueForGameplayState() const {
 void Game_ASH::nextLevel() {
     if (this->currentLevel_++ == 1) {
         this->gameMap_ = std::make_unique<MapLVL2>();
-    } else {
-        return;
+    }
+
+    this->enemies_.clear();
+    this->collectibles_.clear();
+
+    if (currentLevel_ > maxLevels_) {
+        currentLevel_ = 1;
+        gameWonOutro();
+        currentState_ = Game_ASH_State::MENU;
+        return ;
     }
 
     this->eventQueue_ = std::make_unique<std::queue<InputEngine::ButtonEvent> >();
     this->collisionEventQueue_ = std::make_unique<std::queue<CollisionScanner::CollisionEvent> >();
-
-    this->enemies_.clear();
-    this->collectibles_.clear();
 
     this->player_->setPosX(INITIAL_PLAYER_TILE_X * TILE_SQ_SIZE);
     this->player_->setPosY(INITIAL_PLAYER_TILE_Y * TILE_SQ_SIZE);
@@ -379,6 +384,17 @@ void Game_ASH::lvlIntro() const {
     const std::string lvlStr = "LEVEL " + std::to_string(currentLevel_);
     display_.clear(BLACK);
     drawString(display::WIDTH / 2 - textWidth(lvlStr, Font12) / 2, display::HEIGHT / 2, lvlStr, &Font12, BLACK, WHITE);
+    display_.update();
+    sleep_ms(3000);
+}
+
+void Game_ASH::gameWonOutro() const {
+    constexpr uint8_t separation = 10;
+    const std::string gameWonStr = "You win!";
+    const std::string scoreStr = "Score: " + std::to_string(this->player_->getScore());
+    display_.clear(BLACK);
+    drawString(display::WIDTH / 2 - textWidth(gameWonStr, Font12) / 2, display::HEIGHT / 2, gameWonStr, &Font12, BLACK, WHITE);
+    drawString(display::WIDTH / 2 - textWidth(scoreStr, Font12) / 2, display::HEIGHT / 2 + separation, scoreStr, &Font12, BLACK, WHITE);
     display_.update();
     sleep_ms(3000);
 }

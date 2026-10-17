@@ -56,6 +56,7 @@ private:
     std::vector<std::variant<HealthCollectible, ScoreCollectible>> collectibles_{};
 
     uint8_t currentLevel_ = 1;
+    uint8_t maxLevels_ = 2;
 
     bool menuEnterWasDown_{false};
     bool menuUpWasDown_{false};
@@ -92,6 +93,7 @@ private:
 
     void lvlIntro() const;
     void nextLevel();
+    void gameWonOutro() const;
 
     static constexpr uint16_t HUD_X = 10;
     static constexpr uint16_t HUD_Y = 10;
